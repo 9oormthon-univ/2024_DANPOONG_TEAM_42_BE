@@ -3,6 +3,8 @@ package com.groom.swipo.domain.user.entity;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import com.groom.swipo.global.entity.BaseEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -14,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class VerificationCode {
+public class VerificationCode extends BaseEntity {
 	@Id
 	@Column(name = "verification_code_id")
 	private String id;
@@ -22,29 +24,24 @@ public class VerificationCode {
 	private String code;
 	private Integer expirationTimeInMinutes;
 
-	@Column(name = "created_at", nullable = false, updatable = false)
-	private LocalDateTime createAt;
-
 	@Builder
 	private VerificationCode(
 		String id,
 		String code,
-		Integer expirationTimeInMinutes,
-		LocalDateTime createAt
+		Integer expirationTimeInMinutes
 	) {
 		this.id = id;
 		this.code = code;
 		this.expirationTimeInMinutes = expirationTimeInMinutes;
-		this.createAt = createAt;
 	}
 
 	public boolean isExpired(LocalDateTime verifiedAt) {
-		LocalDateTime expiredAt = createAt.plusMinutes(expirationTimeInMinutes);
+		LocalDateTime expiredAt = getCreatedAt().plusMinutes(expirationTimeInMinutes);
 		return verifiedAt.isAfter(expiredAt);
 	}
 
 	public String generateCodeMessage() {
-		String formattedExpiredAt = createAt
+		String formattedExpiredAt = getCreatedAt()
 			.plusMinutes(expirationTimeInMinutes)
 			.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 

@@ -22,4 +22,9 @@ public abstract class BaseEntity {
 	@LastModifiedDate
 	@Column(name = "updated_at", nullable = false)
 	private LocalDateTime updatedAt;
+
+	// createdAt 뽑아쓰기 용도
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
 }

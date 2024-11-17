@@ -32,7 +32,7 @@ public class Pay extends BaseEntity {
 	private Long id;
 
 	@Column(nullable = false)
-	private long total_money;
+	private long totalMoney;
 
 	// 유저 id
 	@OneToOne(fetch = FetchType.LAZY)
@@ -44,7 +44,7 @@ public class Pay extends BaseEntity {
 	private List<Paylist> paylists = new ArrayList<>();
 
 	@Builder
-	private Pay(long total_money) {
-		this.total_money = total_money;
+	private Pay(long totalMoney) {
+		this.totalMoney = totalMoney;
 	}
 }

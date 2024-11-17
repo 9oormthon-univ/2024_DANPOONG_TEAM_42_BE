@@ -19,9 +19,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PayChargeList extends BaseEntity {
+public class PayChargelist extends BaseEntity {
 	@Id
-	@Column(name = "pay_charge_list_id")
+	@Column(name = "pay_chargelist_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
@@ -41,7 +41,7 @@ public class PayChargeList extends BaseEntity {
 	private User user;
 
 	@Builder
-	private PayChargeList(String name, Integer price, String impUid, String merchantUid) {
+	private PayChargelist(String name, Integer price, String impUid, String merchantUid) {
 		this.name = name;
 		this.price = price;
 		this.impUid = impUid;

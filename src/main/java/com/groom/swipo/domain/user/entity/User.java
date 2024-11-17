@@ -6,7 +6,7 @@ import java.util.List;
 import org.hibernate.annotations.ColumnDefault;
 
 import com.groom.swipo.domain.payment.entity.Pay;
-import com.groom.swipo.domain.payment.entity.PayChargeList;
+import com.groom.swipo.domain.payment.entity.PayChargelist;
 import com.groom.swipo.domain.point.entity.Card;
 import com.groom.swipo.domain.point.entity.MyPiece;
 import com.groom.swipo.domain.store.entity.Reviews;
@@ -46,7 +46,7 @@ public class User extends BaseEntity {
 	@Column(nullable = false, unique = true)
 	private String providerId; // 소셜 로그인 제공자 고유번호
 
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false)
 	private String name; // 사용자 이름
 
 	@Column(nullable = false)
@@ -60,6 +60,9 @@ public class User extends BaseEntity {
 	private String phone; // 사용자 전화번호
 
 	@Column(nullable = false)
+	private String password; // 사용자 간편비밀번호
+
+	@Column(nullable = false)
 	private Boolean isMarketing; // 사용자 마켓팅 여부
 
 	private String imageUrl; // 사용자 프로필 이미지 URL
@@ -71,7 +74,7 @@ public class User extends BaseEntity {
 	// 밑에 연관관계 적어두기
 	// 페이 충전내역
 	@OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
-	private List<PayChargeList> payChargeLists = new ArrayList<>();
+	private List<PayChargelist> payChargelists = new ArrayList<>();
 
 	// 보유조각
 	@OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
@@ -93,10 +96,6 @@ public class User extends BaseEntity {
 	@OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)
 	private Pay pays;
 
-	// 비밀번호
-	@OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)
-	private Password password;
-
 	// 기타
 	@Builder
 	private User(Provider provider,
@@ -105,6 +104,7 @@ public class User extends BaseEntity {
 		String address,
 		Telecom telecom,
 		String phone,
+		String password,
 		Boolean isMarketing,
 		String imageUrl,
 		Boolean isOpenbank
@@ -115,6 +115,7 @@ public class User extends BaseEntity {
 		this.address = address;
 		this.telecom = telecom;
 		this.phone = phone;
+		this.password = password;
 		this.isMarketing = isMarketing;
 		this.imageUrl = imageUrl;
 		this.isOpenbank = isOpenbank;

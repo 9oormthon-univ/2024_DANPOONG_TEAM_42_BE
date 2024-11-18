@@ -32,3 +32,9 @@ jwt:
   expire-time:
     access-token: ${jwt.expire-time.access-token}
     refresh-token: ${jwt.expire-time.refresh-token}
+
+oauth:
+  kakao:
+    client-id: ${oauth.kakao.client-id}
+    client-secret: ${oauth.kakao.client-secret}
+    redirect-uri: ${oauth.kakao.redirect-uri}

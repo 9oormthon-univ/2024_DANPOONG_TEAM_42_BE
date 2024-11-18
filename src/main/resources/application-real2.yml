@@ -1,0 +1,3 @@
+# application-real2.yml
+server:
+  port: 8082

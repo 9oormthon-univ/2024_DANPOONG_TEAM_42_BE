@@ -33,7 +33,7 @@ public class TokenRenewService {
 		String storedRefreshToken = redisTemplate.opsForValue().get(REFRESH_TOKEN_PREFIX + userId);
 
 		if (storedRefreshToken == null || !storedRefreshToken.equals(request.refreshToken())) {
-			throw new InvalidTokenException();
+			throw InvalidTokenException.invalidToken();
 		}
 
 		User user = userRepository.findById(userId)

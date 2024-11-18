@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import com.groom.swipo.domain.auth.exception.InvalidTokenException;
 import com.groom.swipo.domain.user.entity.User;
 
 import io.jsonwebtoken.Claims;
@@ -84,22 +85,18 @@ public class TokenProvider {
 		return null;
 	}
 
-	public boolean validateToken(String token) {
+	public void validateToken(String token) {
 		try {
 			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-			return true;
 		} catch (ExpiredJwtException e) {
 			log.error("JWT expired.");
+			throw InvalidTokenException.expired();
 		} catch (SignatureException e) {
 			log.error("Invalid JWT signature.");
-		} catch (UnsupportedJwtException | MalformedJwtException e) {
+			throw InvalidTokenException.invalidSignature();
+		} catch (UnsupportedJwtException | MalformedJwtException | IllegalArgumentException e) {
 			log.error("Invalid JWT format.");
-		} catch (IllegalArgumentException e) {
-			log.error("JWT is empty or blank.");
-		} catch (Exception e) {
-			log.error("JWT validation failed.", e);
+			throw InvalidTokenException.invalidToken();
 		}
-
-		return false;
 	}
 }

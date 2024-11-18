@@ -26,3 +26,9 @@ logging:
   level:
     org.hibernate.sql: debug
     org.hibernate.type: trace
+
+jwt:
+  secret: ${jwt.secret}
+  expire-time:
+    access-token: ${jwt.expire-time.access-token}
+    refresh-token: ${jwt.expire-time.refresh-token}

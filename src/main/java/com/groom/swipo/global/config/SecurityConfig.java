@@ -21,7 +21,10 @@ public class SecurityConfig {
 
 	private final TokenProvider tokenprovider;
 	private final String[] PERMIT_ALL_URLS = {
-		"/v1/**", "/profile"
+		"swagger-ui/**",
+		"v3/api-docs/**",
+		"/v1/**",
+		"/profile"
 	};
 
 	@Bean

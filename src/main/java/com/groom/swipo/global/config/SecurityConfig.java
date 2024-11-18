@@ -21,7 +21,7 @@ public class SecurityConfig {
 
 	private final TokenProvider tokenprovider;
 	private final String[] PERMIT_ALL_URLS = {
-		"/v1/**"
+		"/v1/**", "/profile"
 	};
 
 	@Bean

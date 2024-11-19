@@ -1,4 +1,4 @@
-package com.groom.swipo.global;
+package com.groom.swipo.global.common.controller;
 
 import java.util.Arrays;
 import java.util.List;

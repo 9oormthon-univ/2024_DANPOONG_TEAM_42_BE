@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.groom.swipo.domain.auth.dto.request.KakaoLoginRequest;
+import com.groom.swipo.domain.auth.dto.request.SocialLoginRequest;
 import com.groom.swipo.domain.auth.dto.request.TokenRefreshRequest;
-import com.groom.swipo.domain.auth.dto.response.KakaoLoginResponse;
+import com.groom.swipo.domain.auth.dto.response.SocialLoginResponse;
 import com.groom.swipo.domain.auth.dto.response.TokenRefreshResponse;
 import com.groom.swipo.domain.auth.service.KakaoLoginService;
 import com.groom.swipo.domain.auth.service.TokenRenewService;
@@ -41,8 +41,8 @@ public class UserController {
 			@ApiResponse(responseCode = "500", description = "서버 오류")
 		}
 	)
-	public ResTemplate<KakaoLoginResponse> kakaoLogin(@RequestBody KakaoLoginRequest request) {
-		KakaoLoginResponse data = kakaoLoginService.kakaoLogin(request.kakaoCode());
+	public ResTemplate<SocialLoginResponse> kakaoLogin(@RequestBody SocialLoginRequest request) {
+		SocialLoginResponse data = kakaoLoginService.kakaoLogin(request.code());
 		if (data.userId() == null) {
 			return new ResTemplate<>(HttpStatus.I_AM_A_TEAPOT, "회원가입 필요", data);
 		}

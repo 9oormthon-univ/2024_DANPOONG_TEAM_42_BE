@@ -13,7 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.groom.swipo.domain.auth.dto.response.KakaoLoginResponse;
+import com.groom.swipo.domain.auth.dto.response.SocialLoginResponse;
 import com.groom.swipo.domain.auth.exception.KakaoAuthException;
 import com.groom.swipo.domain.user.entity.User;
 import com.groom.swipo.domain.user.entity.enums.Provider;
@@ -46,24 +46,24 @@ public class KakaoLoginService {
 	private String redirectUri;
 
 	@Transactional
-	public KakaoLoginResponse kakaoLogin(String code) {
+	public SocialLoginResponse kakaoLogin(String code) {
 		try {
 			String kakaoAccessToken = getKakaoAccessToken(code);
 			String[] userInfo = getKakaoUserInfo(kakaoAccessToken);
 
 			return userRepository.findByProviderAndProviderId(Provider.KAKAO, userInfo[0])
 				.map(this::handleExistingUserLogin)
-				.orElseGet(() -> KakaoLoginResponse.of(userInfo[0], userInfo[1]));
+				.orElseGet(() -> SocialLoginResponse.of(userInfo[0], userInfo[1]));
 		} catch (JsonProcessingException e) {
 			throw new KakaoAuthException();
 		}
 	}
 
-	private KakaoLoginResponse handleExistingUserLogin(User user) {
+	private SocialLoginResponse handleExistingUserLogin(User user) {
 		String accessToken = tokenProvider.createAccessToken(user);
 		String refreshToken = tokenProvider.createRefreshToken(user);
 		tokenRenewService.saveRefreshToken(refreshToken, user.getId());
-		return KakaoLoginResponse.of(user.getId(), accessToken, refreshToken);
+		return SocialLoginResponse.of(user.getId(), accessToken, refreshToken);
 	}
 
 	private String getKakaoAccessToken(String code) throws JsonProcessingException {

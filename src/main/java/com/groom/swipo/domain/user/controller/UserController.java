@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/user")
-@Tag(name = "사용자", description = "사용자를 담당하는 API 그룹")
+@Tag(name = "사용자", description = "사용자 관련 API 그룹")
 public class UserController {
 
 	private final KakaoLoginService kakaoLoginService;

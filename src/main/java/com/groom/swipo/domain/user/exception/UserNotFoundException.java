@@ -1,4 +1,4 @@
-package com.groom.swipo.domain.auth.exception;
+package com.groom.swipo.domain.user.exception;
 
 import com.groom.swipo.global.error.exception.NotFoundGroupException;
 

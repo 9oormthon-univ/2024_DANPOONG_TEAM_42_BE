@@ -14,7 +14,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
@@ -32,10 +31,10 @@ public class Pay extends BaseEntity {
 	private Long id;
 
 	@Column(nullable = false)
-	private long totalMoney;
+	private Integer totalPay;
 
 	// 유저 id
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "user_id")
 	private User user;
 
@@ -44,7 +43,12 @@ public class Pay extends BaseEntity {
 	private List<Paylist> paylists = new ArrayList<>();
 
 	@Builder
-	private Pay(long totalMoney) {
-		this.totalMoney = totalMoney;
+	private Pay(Integer totalPay, User user) {
+		this.totalPay = totalPay;
+		this.user = user;
+	}
+
+	public void updatePay(Integer payIncrement) {
+		this.totalPay += payIncrement;
 	}
 }

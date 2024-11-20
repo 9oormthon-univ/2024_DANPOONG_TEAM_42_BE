@@ -3,6 +3,8 @@ package com.groom.swipo.domain.payment.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import com.groom.swipo.domain.user.entity.User;
 import com.groom.swipo.global.entity.BaseEntity;
 
@@ -14,7 +16,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
@@ -32,10 +33,11 @@ public class Pay extends BaseEntity {
 	private Long id;
 
 	@Column(nullable = false)
-	private long totalMoney;
+	@ColumnDefault("0")
+	private Integer totalPay;
 
 	// 유저 id
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
 	private User user;
 
@@ -44,7 +46,16 @@ public class Pay extends BaseEntity {
 	private List<Paylist> paylists = new ArrayList<>();
 
 	@Builder
-	private Pay(long totalMoney) {
-		this.totalMoney = totalMoney;
+	private Pay(Integer totalPay, User user) {
+		this.totalPay = totalPay;
+		this.user = user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public void updatePay(Integer amount) {
+		this.totalPay += amount;
 	}
 }

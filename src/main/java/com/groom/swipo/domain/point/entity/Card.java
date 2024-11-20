@@ -6,11 +6,14 @@ import java.util.List;
 import org.hibernate.annotations.ColumnDefault;
 
 import com.groom.swipo.domain.user.entity.User;
+import com.groom.swipo.global.common.enums.Area;
 import com.groom.swipo.global.entity.BaseEntity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -44,6 +47,10 @@ public class Card extends BaseEntity {
 	@Column(nullable = false)
 	private String customeImage;
 
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private Area area;
+
 	// 유저 id
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
@@ -54,10 +61,15 @@ public class Card extends BaseEntity {
 	private List<Cardlist> cardlists = new ArrayList<>();
 
 	@Builder
-	private Card(String number, String contents, Integer totalPoint, String customeImage) {
+	private Card(String number, String contents, Integer totalPoint, String customeImage, Area area) {
 		this.number = number;
 		this.contents = contents;
 		this.totalPoint = totalPoint;
 		this.customeImage = customeImage;
+		this.area = area;
+	}
+
+	public void updatePoint(Integer amount) {
+		this.totalPoint += amount;
 	}
 }

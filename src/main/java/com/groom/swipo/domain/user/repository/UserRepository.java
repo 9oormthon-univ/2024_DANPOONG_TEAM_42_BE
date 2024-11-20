@@ -12,4 +12,5 @@ import com.groom.swipo.domain.user.entity.enums.Provider;
 public interface UserRepository extends JpaRepository<User, Long> {
 
 	Optional<User> findByProviderAndProviderId(Provider provider, String providerId);
+	boolean existsByPhone(String phone);
 }

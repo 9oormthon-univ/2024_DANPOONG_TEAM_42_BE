@@ -20,9 +20,11 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
@@ -51,6 +53,9 @@ public class User extends BaseEntity {
 
 	@Column(nullable = false)
 	private String address; // 사용자 주소
+
+	@Column(nullable = false)
+	private String birth; // 생년월일
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -93,8 +98,9 @@ public class User extends BaseEntity {
 	private List<Card> Cards = new ArrayList<>();
 
 	// 페이
-	@OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)
-	private Pay pays;
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "pay_id")
+	private Pay pay;
 
 	// 기타
 	@Builder
@@ -102,22 +108,30 @@ public class User extends BaseEntity {
 		String providerId,
 		String name,
 		String address,
+		String birth,
 		Telecom telecom,
 		String phone,
 		String password,
 		Boolean isMarketing,
 		String imageUrl,
-		Boolean isOpenbank
+		Boolean isOpenbank,
+		Pay pay
 	) {
 		this.provider = provider;
 		this.providerId = providerId;
 		this.name = name;
 		this.address = address;
+		this.birth = birth;
 		this.telecom = telecom;
 		this.phone = phone;
 		this.password = password;
 		this.isMarketing = isMarketing;
 		this.imageUrl = imageUrl;
 		this.isOpenbank = isOpenbank;
+		this.pay = pay;
+	}
+
+	public void setPassword(String encodedPassword) {
+		this.password = encodedPassword;
 	}
 }

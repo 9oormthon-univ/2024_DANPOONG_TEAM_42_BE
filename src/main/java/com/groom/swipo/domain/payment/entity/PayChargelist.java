@@ -41,10 +41,11 @@ public class PayChargelist extends BaseEntity {
 	private User user;
 
 	@Builder
-	private PayChargelist(String name, Integer price, String impUid, String merchantUid) {
+	private PayChargelist(String name, Integer price, String impUid, String merchantUid, User user) {
 		this.name = name;
 		this.price = price;
 		this.impUid = impUid;
 		this.merchantUid = merchantUid;
+		this.user = user;
 	}
 }

@@ -64,7 +64,8 @@ public class PaymentController {
 			@ApiResponse(responseCode = "500", description = "서버 오류")
 		}
 	)
-	public ResTemplate<PaymentPageResponse> getPaymentPage(@RequestParam(name = "storeId") Long storeId, Principal principal) {
+	public ResTemplate<PaymentPageResponse> getPaymentPage(@RequestParam(name = "storeId") Long storeId,
+		Principal principal) {
 		PaymentPageResponse data = paymentService.getPaymentPage(storeId, principal);
 		return new ResTemplate<>(HttpStatus.OK, "결제 페이지 조회 성공", data);
 	}
@@ -82,7 +83,8 @@ public class PaymentController {
 			@ApiResponse(responseCode = "500", description = "서버 오류")
 		}
 	)
-	public ResTemplate<PaymentCompleteResponse> completePayment(@RequestBody PaymentCompleteRequest request, Principal principal) {
+	public ResTemplate<PaymentCompleteResponse> completePayment(@RequestBody PaymentCompleteRequest request,
+		Principal principal) {
 		PaymentCompleteResponse data = paymentService.completePayment(request, principal);
 		return new ResTemplate<>(HttpStatus.OK, "결제 완료", data);
 	}

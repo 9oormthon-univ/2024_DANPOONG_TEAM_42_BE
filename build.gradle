@@ -51,6 +51,9 @@ dependencies {
 
 	// spring security
 	implementation("org.springframework.boot:spring-boot-starter-security")
+
+	// 휴대폰 인증 API (nurigo)
+	implementation 'net.nurigo:sdk:4.3.0'
 }
 
 // iamport

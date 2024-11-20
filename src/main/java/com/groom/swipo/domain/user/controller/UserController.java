@@ -3,6 +3,7 @@ package com.groom.swipo.domain.user.controller;
 import java.security.Principal;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -127,5 +128,22 @@ public class UserController {
 		return new ResTemplate<>(HttpStatus.OK, "비밀번호 변경완료", null);
 	}
 	// 회원탈퇴
+	@DeleteMapping("/delete")
+	@Operation(
+		summary = "회원 탈퇴",
+		description = "회원을 완전히 탈퇴하고, Redis에서 jwt 토큰도 삭제",
+		responses = {
+			@ApiResponse(responseCode = "200", description = "회원탈퇴 완료"),
+			@ApiResponse(responseCode = "400", description = "비밀번호 불일치 또는 잘못된 형식"),
+			@ApiResponse(responseCode = "401", description = "인증되지 않은 요청"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
+		}
+	)
+	public ResTemplate<Void> deleteUser(Principal principal) {
+		userService.deleteUser(principal);
+		return new ResTemplate<>(HttpStatus.OK, "탈퇴완료", null);
+	}
+
+
 	// 마이페이지 조회
 }

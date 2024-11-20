@@ -3,6 +3,7 @@ package com.groom.swipo.domain.user.service;
 import java.security.Principal;
 
 import org.springframework.core.convert.ConversionService;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +36,8 @@ public class UserService {
 
 	private final TokenProvider tokenProvider;
 	private final PasswordEncoder passwordEncoder;
+
+	private final RedisTemplate<String, String> redisTemplate;
 
 	@Transactional
 	public RegisterUserResponse registerUser(RegisterUserRequest request) {
@@ -71,17 +74,31 @@ public class UserService {
 	}
 
 	// 비밀번호 변경
+	@Transactional
 	public void editPassword(PwdRequest request, Principal principal) {
 		Long userId = Long.parseLong(principal.getName());
 		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
-		if (!passwordEncoder.matches(request.pwd(), user.getPassword())) {
+		if (passwordEncoder.matches(request.pwd(), user.getPassword())) {
 			throw new SamePasswordException();
 		}
 
 		String encodedNewPassword = passwordEncoder.encode(request.pwd());
 		user.setPassword(encodedNewPassword);
 		userRepository.save(user);
+	}
+
+	// 회원탈퇴
+	@Transactional
+	public void deleteUser(Principal principal) {
+		Long userId = Long.parseLong(principal.getName());
+		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+
+		userRepository.delete(user);
+
+		// Redis에서 JWT 제거
+		String tokenKey = "jwt:" + userId;
+		redisTemplate.delete(tokenKey);
 	}
 
 	// 유저 정보 저장

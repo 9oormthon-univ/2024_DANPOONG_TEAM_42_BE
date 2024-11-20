@@ -41,18 +41,13 @@ public class VerificationCode extends BaseEntity {
 	}
 
 	public String generateCodeMessage() {
-		String formattedExpiredAt = getCreatedAt()
-			.plusMinutes(expirationTimeInMinutes)
-			.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
 		// 메시지 포맷
 		return String.format(
 			"""
 				[SWIPO 인증번호] 
 				%s
-				만료 기한 : %s
 				""",
-			code, formattedExpiredAt
+			code
 		);
 	}
 }

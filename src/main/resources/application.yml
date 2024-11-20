@@ -43,3 +43,9 @@ imp:
   api:
     key: ${imp.api.key}
     secret-key: ${imp.api.secret-key}
+
+sms:
+  api-key: ${sms.api-key}
+  api-secret: ${sms.api-secret}
+  sender: ${sms.sender}
+  provider: https://api.coolsms.co.kr

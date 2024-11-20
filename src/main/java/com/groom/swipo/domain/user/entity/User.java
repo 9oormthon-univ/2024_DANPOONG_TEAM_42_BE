@@ -55,6 +55,9 @@ public class User extends BaseEntity {
 	private String address; // 사용자 주소
 
 	@Column(nullable = false)
+	private String birth; // 생년월일
+
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Telecom telecom; // 사용자 통신사
 
@@ -95,7 +98,7 @@ public class User extends BaseEntity {
 	private List<Card> Cards = new ArrayList<>();
 
 	// 페이
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "pay_id")
 	private Pay pay;
 
@@ -105,6 +108,7 @@ public class User extends BaseEntity {
 		String providerId,
 		String name,
 		String address,
+		String birth,
 		Telecom telecom,
 		String phone,
 		String password,
@@ -117,6 +121,7 @@ public class User extends BaseEntity {
 		this.providerId = providerId;
 		this.name = name;
 		this.address = address;
+		this.birth = birth;
 		this.telecom = telecom;
 		this.phone = phone;
 		this.password = password;
@@ -124,5 +129,9 @@ public class User extends BaseEntity {
 		this.imageUrl = imageUrl;
 		this.isOpenbank = isOpenbank;
 		this.pay = pay;
+	}
+
+	public void setPassword(String encodedPassword) {
+		this.password = encodedPassword;
 	}
 }

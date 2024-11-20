@@ -37,7 +37,7 @@ public class Pay extends BaseEntity {
 	private Integer totalPay;
 
 	// 유저 id
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
 	private User user;
 

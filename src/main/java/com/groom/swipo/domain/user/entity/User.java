@@ -98,7 +98,7 @@ public class User extends BaseEntity {
 	private List<Card> Cards = new ArrayList<>();
 
 	// 페이
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "pay_id")
 	private Pay pay;
 

@@ -14,7 +14,7 @@ import com.groom.swipo.domain.auth.dto.response.KakaoLoginResponse;
 import com.groom.swipo.domain.auth.dto.response.TokenRefreshResponse;
 import com.groom.swipo.domain.auth.service.KakaoLoginService;
 import com.groom.swipo.domain.auth.service.TokenRenewService;
-import com.groom.swipo.domain.user.dto.request.ChkPwdRequest;
+import com.groom.swipo.domain.user.dto.request.PwdRequest;
 import com.groom.swipo.domain.user.dto.request.RegisterUserRequest;
 import com.groom.swipo.domain.user.dto.response.RegisterUserResponse;
 import com.groom.swipo.domain.user.service.UserService;
@@ -100,17 +100,32 @@ public class UserController {
 		responses = {
 			@ApiResponse(responseCode = "200", description = "비밀번호 일치"),
 			@ApiResponse(responseCode = "400", description = "비밀번호 불일치 또는 잘못된 형식"),
-			@ApiResponse(responseCode = "401", description = "엑세스 토큰 만료"),
+			@ApiResponse(responseCode = "401", description = "인증되지 않은 요청"),
 			@ApiResponse(responseCode = "500", description = "서버 오류")
 		}
 	)
-	public ResTemplate<Void> checkPassword(@RequestBody ChkPwdRequest request, Principal principal) {
+	public ResTemplate<Void> checkPassword(@RequestBody PwdRequest request, Principal principal) {
 		userService.checkPassword(request, principal);
 		 return new ResTemplate<>(HttpStatus.OK, "비밀번호 일치", null);
 	}
 
 	// 비밀번호 변경
+	@PostMapping("/editPwd")
+	@Operation(
+		summary = "비밀번호 검증",
+		description = "기존 비밀번호를 입력된 비밀번호로 변경합니다",
+		responses = {
+			@ApiResponse(responseCode = "200", description = "비밀번호 일치"),
+			@ApiResponse(responseCode = "400", description = "비밀번호 불일치 또는 잘못된 형식"),
+			@ApiResponse(responseCode = "401", description = "인증되지 않은 요청"),
+			@ApiResponse(responseCode = "409", description = "이전 비밀번호와 동일한 경우"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
+		}
+	)
+	public ResTemplate<Void> editPassword(@RequestBody PwdRequest request, Principal principal) {
+		userService.editPassword(request, principal);
+		return new ResTemplate<>(HttpStatus.OK, "비밀번호 변경완료", null);
+	}
 	// 회원탈퇴
 	// 마이페이지 조회
-	// 휴대폰번호 변경
 }

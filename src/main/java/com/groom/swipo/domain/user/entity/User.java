@@ -130,4 +130,8 @@ public class User extends BaseEntity {
 		this.isOpenbank = isOpenbank;
 		this.pay = pay;
 	}
+
+	public void setPassword(String encodedPassword) {
+		this.password = encodedPassword;
+	}
 }

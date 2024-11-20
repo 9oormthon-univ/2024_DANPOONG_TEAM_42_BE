@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.groom.swipo.domain.payment.entity.Pay;
-import com.groom.swipo.domain.user.dto.request.ChkPwdRequest;
+import com.groom.swipo.domain.user.dto.request.PwdRequest;
 import com.groom.swipo.domain.user.dto.request.RegisterUserRequest;
 import com.groom.swipo.domain.user.dto.response.RegisterUserResponse;
 import com.groom.swipo.domain.user.entity.User;
@@ -17,6 +17,7 @@ import com.groom.swipo.domain.user.entity.enums.Telecom;
 import com.groom.swipo.domain.user.exception.DuplicatePhoneNumberException;
 import com.groom.swipo.domain.user.exception.InvalidPasswordException;
 import com.groom.swipo.domain.user.exception.OAuthRequestException;
+import com.groom.swipo.domain.user.exception.SamePasswordException;
 import com.groom.swipo.domain.user.exception.UserAlreadyExistsException;
 import com.groom.swipo.domain.user.exception.UserNotFoundException;
 import com.groom.swipo.domain.user.repository.UserRepository;
@@ -60,13 +61,27 @@ public class UserService {
 	}
 
 	// 비밀번호 조회
-	public void checkPassword(ChkPwdRequest request, Principal principal) {
+	public void checkPassword(PwdRequest request, Principal principal) {
 		Long userId = Long.parseLong(principal.getName());
 		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
 		if (!passwordEncoder.matches(request.pwd(), user.getPassword())) {
 			throw new InvalidPasswordException();
 		}
+	}
+
+	// 비밀번호 변경
+	public void editPassword(PwdRequest request, Principal principal) {
+		Long userId = Long.parseLong(principal.getName());
+		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+
+		if (!passwordEncoder.matches(request.pwd(), user.getPassword())) {
+			throw new SamePasswordException();
+		}
+
+		String encodedNewPassword = passwordEncoder.encode(request.pwd());
+		user.setPassword(encodedNewPassword);
+		userRepository.save(user);
 	}
 
 	// 유저 정보 저장

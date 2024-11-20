@@ -1,6 +1,7 @@
 package com.groom.swipo.domain.user.controller;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,9 +16,12 @@ import com.groom.swipo.domain.auth.dto.response.KakaoLoginResponse;
 import com.groom.swipo.domain.auth.dto.response.TokenRefreshResponse;
 import com.groom.swipo.domain.auth.service.KakaoLoginService;
 import com.groom.swipo.domain.auth.service.TokenRenewService;
+import com.groom.swipo.domain.user.dto.request.PhoneCheckRequest;
+import com.groom.swipo.domain.user.dto.request.PhoneVerificationRequest;
 import com.groom.swipo.domain.user.dto.request.PwdRequest;
 import com.groom.swipo.domain.user.dto.request.RegisterUserRequest;
 import com.groom.swipo.domain.user.dto.response.RegisterUserResponse;
+import com.groom.swipo.domain.user.service.SmsService;
 import com.groom.swipo.domain.user.service.UserService;
 import com.groom.swipo.global.template.ResTemplate;
 
@@ -32,6 +36,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "사용자", description = "사용자 관련 API 그룹")
 public class UserController {
 	private final UserService userService;
+	private final SmsService smsService;
 	private final KakaoLoginService kakaoLoginService;
 	private final TokenRenewService tokenRenewService;
 
@@ -73,10 +78,41 @@ public class UserController {
 		return new ResTemplate<>(HttpStatus.OK, "재발급 성공", data);
 	}
 
-	// 문자인증
-	// 문자인증 검증
+	@PostMapping("/phone")
+	@Operation(
+		summary = "휴대폰 인증",
+		description = "휴대폰 번호를 받아 해당 번호로 인증코드 발송",
+		security = {},
+		responses = {
+			@ApiResponse(responseCode = "201", description = "로그인 성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
+		}
+	)
+	public ResTemplate<Void> getPhoneCheck(@RequestBody PhoneCheckRequest request) {
+		LocalDateTime sentAt = LocalDateTime.now();
+		smsService.sendVerificationMessage(request.phone(), sentAt); // 인스턴스 메서드 호출
+		return new ResTemplate<>(HttpStatus.OK, "송신 완료", null);
+	}
 
-	// 회원가입
+	@PostMapping("/phone-verification")
+	@Operation(
+		summary = "휴대폰 인증",
+		description = "사용자가 받은 인증코드와 서버에서 보낸 인증코드를 대조하여 검증",
+		security = {},
+		responses = {
+			@ApiResponse(responseCode = "201", description = "로그인 성공"),
+			@ApiResponse(responseCode = "400", description = "인증번호가 틀렸을 경우"),
+			@ApiResponse(responseCode = "408", description = "인증 시간이 만료되었을 경우"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
+		}
+	)
+	public ResTemplate<Void> verificationByCode(@RequestBody PhoneVerificationRequest request) {
+		LocalDateTime verifiedAt = LocalDateTime.now();
+		smsService.verifyCode(request.phone(), request.code(), verifiedAt);
+		return new ResTemplate<>(HttpStatus.OK, "인증 완료", null);
+	}
+
 	@PostMapping("/register")
 	@Operation(
 		summary = "회원가입",

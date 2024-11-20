@@ -40,7 +40,7 @@ public class PaymentController {
 			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
 			@ApiResponse(responseCode = "401", description = "인증되지 않은 요청"),
 			@ApiResponse(responseCode = "403", description = "페이지 접근 권한이 없음"),
-			@ApiResponse(responseCode = "404", description = "사용자가 존재하지 않음"),
+			@ApiResponse(responseCode = "404", description = "요청한 리소스를 찾을 수 없음"),
 			@ApiResponse(responseCode = "500", description = "서버 오류")
 		}
 	)
@@ -50,6 +50,18 @@ public class PaymentController {
 	}
 
 	@GetMapping("/page")
+	@Operation(
+		summary = "결제 페이지 조회",
+		description = "특정 가게 ID로 해당 지역의 보유 포인트, 스위페이 잔액, 포인트 적립 비율을 반환합니다.",
+		responses = {
+			@ApiResponse(responseCode = "200", description = "결제 페이지 조회 성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "401", description = "인증되지 않은 요청"),
+			@ApiResponse(responseCode = "403", description = "페이지 접근 권한이 없음"),
+			@ApiResponse(responseCode = "404", description = "요청한 리소스를 찾을 수 없음"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
+		}
+	)
 	public ResTemplate<PaymentPageResponse> getPaymentPage(@RequestParam(name = "storeId") Long storeId,
 		Principal principal) {
 		PaymentPageResponse data = paymentService.getPaymentPage(storeId, principal);

@@ -70,6 +70,18 @@ public class PaymentController {
 	}
 
 	@PostMapping("/complete")
+	@Operation(
+		summary = "결제 완료 처리",
+		description = "결제 후 사용자의 페이, 포인트를 업데이트합니다. 패스워드 불일치, 보유 포인트 부족 시 오류가 발생합니다.",
+		responses = {
+			@ApiResponse(responseCode = "200", description = "결제 완료 성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "401", description = "인증되지 않은 요청"),
+			@ApiResponse(responseCode = "403", description = "페이지 접근 권한이 없음"),
+			@ApiResponse(responseCode = "404", description = "요청한 리소스를 찾을 수 없음"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
+		}
+	)
 	public ResTemplate<PaymentCompleteResponse> completePayment(@RequestBody PaymentCompleteRequest request, Principal principal) {
 		PaymentCompleteResponse data = paymentService.completePayment(request, principal);
 		return new ResTemplate<>(HttpStatus.OK, "결제 완료", data);

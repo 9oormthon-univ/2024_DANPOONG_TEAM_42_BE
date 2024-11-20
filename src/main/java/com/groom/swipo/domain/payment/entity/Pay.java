@@ -51,7 +51,7 @@ public class Pay extends BaseEntity {
 		this.user = user;
 	}
 
-	public void updatePay(Integer payIncrement) {
-		this.totalPay += payIncrement;
+	public void updatePay(Integer amount) {
+		this.totalPay += amount;
 	}
 }

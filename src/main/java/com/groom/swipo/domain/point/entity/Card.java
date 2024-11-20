@@ -68,4 +68,8 @@ public class Card extends BaseEntity {
 		this.customeImage = customeImage;
 		this.area = area;
 	}
+
+	public void updatePoint(Integer amount) {
+		this.totalPoint += amount;
+	}
 }

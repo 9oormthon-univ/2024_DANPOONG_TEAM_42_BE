@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.groom.swipo.domain.payment.dto.request.PayChargeRequest;
+import com.groom.swipo.domain.payment.dto.request.PaymentCompleteRequest;
 import com.groom.swipo.domain.payment.dto.response.PayChargeResponse;
+import com.groom.swipo.domain.payment.dto.response.PaymentCompleteResponse;
 import com.groom.swipo.domain.payment.dto.response.PaymentPageResponse;
 import com.groom.swipo.domain.payment.service.PayChargeService;
 import com.groom.swipo.domain.payment.service.PaymentService;
@@ -62,9 +64,14 @@ public class PaymentController {
 			@ApiResponse(responseCode = "500", description = "서버 오류")
 		}
 	)
-	public ResTemplate<PaymentPageResponse> getPaymentPage(@RequestParam(name = "storeId") Long storeId,
-		Principal principal) {
+	public ResTemplate<PaymentPageResponse> getPaymentPage(@RequestParam(name = "storeId") Long storeId, Principal principal) {
 		PaymentPageResponse data = paymentService.getPaymentPage(storeId, principal);
 		return new ResTemplate<>(HttpStatus.OK, "결제 페이지 조회 성공", data);
+	}
+
+	@PostMapping("/complete")
+	public ResTemplate<PaymentCompleteResponse> completePayment(@RequestBody PaymentCompleteRequest request, Principal principal) {
+		PaymentCompleteResponse data = paymentService.completePayment(request, principal);
+		return new ResTemplate<>(HttpStatus.OK, "결제 완료", data);
 	}
 }

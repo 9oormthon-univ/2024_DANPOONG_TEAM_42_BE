@@ -38,3 +38,8 @@ oauth:
     client-id: ${oauth.kakao.client-id}
     client-secret: ${oauth.kakao.client-secret}
     redirect-uri: ${oauth.kakao.redirect-uri}
+
+imp:
+  api:
+    key: ${imp.api.key}
+    secret-key: ${imp.api.secret-key}

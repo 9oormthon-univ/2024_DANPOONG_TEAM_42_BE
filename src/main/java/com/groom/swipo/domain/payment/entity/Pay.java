@@ -3,6 +3,8 @@ package com.groom.swipo.domain.payment.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import com.groom.swipo.domain.user.entity.User;
 import com.groom.swipo.global.entity.BaseEntity;
 
@@ -31,6 +33,7 @@ public class Pay extends BaseEntity {
 	private Long id;
 
 	@Column(nullable = false)
+	@ColumnDefault("0")
 	private Integer totalPay;
 
 	// 유저 id

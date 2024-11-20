@@ -1,5 +1,7 @@
 package com.groom.swipo.domain.user.controller;
 
+import java.security.Principal;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +14,7 @@ import com.groom.swipo.domain.auth.dto.response.KakaoLoginResponse;
 import com.groom.swipo.domain.auth.dto.response.TokenRefreshResponse;
 import com.groom.swipo.domain.auth.service.KakaoLoginService;
 import com.groom.swipo.domain.auth.service.TokenRenewService;
+import com.groom.swipo.domain.user.dto.request.ChkPwdRequest;
 import com.groom.swipo.domain.user.dto.request.RegisterUserRequest;
 import com.groom.swipo.domain.user.dto.response.RegisterUserResponse;
 import com.groom.swipo.domain.user.service.UserService;
@@ -71,6 +74,7 @@ public class UserController {
 
 	// 문자인증
 	// 문자인증 검증
+
 	// 회원가입
 	@PostMapping("/register")
 	@Operation(
@@ -88,6 +92,23 @@ public class UserController {
 		RegisterUserResponse data = userService.registerUser(request);
 		return new ResTemplate<>(HttpStatus.CREATED, "회원가입 성공", data);
 	}
+
+	@PostMapping("/chkPwd")
+	@Operation(
+		summary = "비밀번호 검증",
+		description = "입력된 비밀번호가 사용자 계정의 비밀번호와 일치하는지 확인합니다.",
+		responses = {
+			@ApiResponse(responseCode = "200", description = "비밀번호 일치"),
+			@ApiResponse(responseCode = "400", description = "비밀번호 불일치 또는 잘못된 형식"),
+			@ApiResponse(responseCode = "401", description = "엑세스 토큰 만료"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
+		}
+	)
+	public ResTemplate<Void> checkPassword(@RequestBody ChkPwdRequest request, Principal principal) {
+		userService.checkPassword(request, principal);
+		 return new ResTemplate<>(HttpStatus.OK, "비밀번호 일치", null);
+	}
+
 	// 비밀번호 변경
 	// 회원탈퇴
 	// 마이페이지 조회

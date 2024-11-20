@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/user")
-@Tag(name = "사용자", description = "사용자를 담당하는 API 그룹")
+@Tag(name = "사용자", description = "사용자 관련 API 그룹")
 public class UserController {
 
 	private final KakaoLoginService kakaoLoginService;
@@ -36,7 +36,7 @@ public class UserController {
 		responses = {
 			@ApiResponse(responseCode = "200", description = "로그인 성공"),
 			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
-			@ApiResponse(responseCode = "401", description = "유효하지 않은 인가 코드"),
+			@ApiResponse(responseCode = "401", description = "인증되지 않은 요청"),
 			@ApiResponse(responseCode = "418", description = "회원가입 필요"),
 			@ApiResponse(responseCode = "500", description = "서버 오류")
 		}
@@ -57,7 +57,7 @@ public class UserController {
 		responses = {
 			@ApiResponse(responseCode = "200", description = "재발급 성공"),
 			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
-			@ApiResponse(responseCode = "401", description = "만료된 토큰"),
+			@ApiResponse(responseCode = "401", description = "인증되지 않은 요청"),
 			@ApiResponse(responseCode = "500", description = "서버 오류")
 		}
 	)

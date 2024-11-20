@@ -20,9 +20,11 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
@@ -93,8 +95,9 @@ public class User extends BaseEntity {
 	private List<Card> Cards = new ArrayList<>();
 
 	// 페이
-	@OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)
-	private Pay pays;
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "pay_id")
+	private Pay pay;
 
 	// 기타
 	@Builder
@@ -107,7 +110,8 @@ public class User extends BaseEntity {
 		String password,
 		Boolean isMarketing,
 		String imageUrl,
-		Boolean isOpenbank
+		Boolean isOpenbank,
+		Pay pay
 	) {
 		this.provider = provider;
 		this.providerId = providerId;
@@ -119,5 +123,6 @@ public class User extends BaseEntity {
 		this.isMarketing = isMarketing;
 		this.imageUrl = imageUrl;
 		this.isOpenbank = isOpenbank;
+		this.pay = pay;
 	}
 }

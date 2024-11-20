@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.groom.swipo.domain.auth.dto.request.TokenRefreshRequest;
 import com.groom.swipo.domain.auth.dto.response.TokenRefreshResponse;
 import com.groom.swipo.domain.auth.exception.InvalidTokenException;
-import com.groom.swipo.domain.auth.exception.UserNotFoundException;
+import com.groom.swipo.domain.user.exception.UserNotFoundException;
 import com.groom.swipo.domain.user.entity.User;
 import com.groom.swipo.domain.user.repository.UserRepository;
 import com.groom.swipo.global.jwt.TokenProvider;

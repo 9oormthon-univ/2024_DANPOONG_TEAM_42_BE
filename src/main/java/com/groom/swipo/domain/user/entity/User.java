@@ -105,6 +105,7 @@ public class User extends BaseEntity {
 		String providerId,
 		String name,
 		String address,
+		String birth,
 		Telecom telecom,
 		String phone,
 		String password,
@@ -116,6 +117,7 @@ public class User extends BaseEntity {
 		this.providerId = providerId;
 		this.name = name;
 		this.address = address;
+		this.birth = birth;
 		this.telecom = telecom;
 		this.phone = phone;
 		this.password = password;

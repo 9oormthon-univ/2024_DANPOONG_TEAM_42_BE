@@ -24,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/v1/user")
 @Tag(name = "사용자", description = "사용자를 담당하는 API 그룹")
 public class UserController {
-
 	private final KakaoLoginService kakaoLoginService;
 	private final TokenRenewService tokenRenewService;
 

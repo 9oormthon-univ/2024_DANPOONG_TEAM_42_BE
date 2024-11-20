@@ -53,6 +53,9 @@ public class User extends BaseEntity {
 	private String address; // 사용자 주소
 
 	@Column(nullable = false)
+	private String birth; // 생년월일
+
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Telecom telecom; // 사용자 통신사
 

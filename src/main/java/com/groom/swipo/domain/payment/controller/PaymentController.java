@@ -3,14 +3,18 @@ package com.groom.swipo.domain.payment.controller;
 import java.security.Principal;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.groom.swipo.domain.payment.dto.request.PayChargeRequest;
 import com.groom.swipo.domain.payment.dto.response.PayChargeResponse;
+import com.groom.swipo.domain.payment.dto.response.PaymentPageResponse;
 import com.groom.swipo.domain.payment.service.PayChargeService;
+import com.groom.swipo.domain.payment.service.PaymentService;
 import com.groom.swipo.global.template.ResTemplate;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class PaymentController {
 
 	private final PayChargeService payChargeService;
+	private final PaymentService paymentService;
 
 	@PostMapping("/charge")
 	@Operation(
@@ -42,5 +47,12 @@ public class PaymentController {
 	public ResTemplate<PayChargeResponse> payCharge(@RequestBody PayChargeRequest request, Principal principal) {
 		PayChargeResponse data = payChargeService.payCharge(request, principal);
 		return new ResTemplate<>(HttpStatus.OK, "스웨페이 충전 성공", data);
+	}
+
+	@GetMapping("/page")
+	public ResTemplate<PaymentPageResponse> getPaymentPage(@RequestParam(name = "storeId") Long storeId,
+		Principal principal) {
+		PaymentPageResponse data = paymentService.getPaymentPage(storeId, principal);
+		return new ResTemplate<>(HttpStatus.OK, "결제 페이지 조회 성공", data);
 	}
 }

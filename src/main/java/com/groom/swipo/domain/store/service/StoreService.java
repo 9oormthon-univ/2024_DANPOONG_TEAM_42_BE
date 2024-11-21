@@ -96,12 +96,14 @@ public class StoreService {
 
 		List<Store> allStores = storeRepository.findAll();
 
+		// 관심 등록된 가게 필터링 (최대 3개)
 		List<StoreTabInfo> wishlists = allStores.stream()
 			.filter(store -> wishilistRepository.existsByUserAndStoreAndIsWishTrue(user, store))
 			.limit(3)
 			.map(this::convertToTabInfo)
 			.toList();
 
+		// 관심 등록되지 않은 가게를 타입별로 그룹화
 		Map<StoreType, List<StoreTabInfo>> groupedTabs = allStores.stream()
 			.filter(store -> !wishilistRepository.existsByUserAndStoreAndIsWishTrue(user, store))
 			.collect(Collectors.groupingBy(
@@ -110,6 +112,7 @@ public class StoreService {
 				Collectors.mapping(this::convertToTabInfo, Collectors.toList())
 			));
 
+		// 각 탭별로 제한된 개수 반환
 		return MapTabViewResponse.of(
 			wishlists,
 			limit(groupedTabs.get(StoreType.PICK), 3),
@@ -119,6 +122,7 @@ public class StoreService {
 		);
 	}
 
+	// Store 데이터를 StoreTabInfo로 변환
 	private StoreTabInfo convertToTabInfo(Store store) {
 		return StoreTabInfo.of(store,
 			store.getReviews().stream()
@@ -132,6 +136,7 @@ public class StoreService {
 		);
 	}
 
+	// 리스트 최대 개수 제한
 	private List<StoreTabInfo> limit(List<StoreTabInfo> stores, int limit) {
 		return stores == null ? List.of() : stores.stream()
 			.limit(limit)

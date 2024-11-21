@@ -116,6 +116,8 @@ public class StoreController {
 			@ApiResponse(responseCode = "200", description = "탭별 가게 조회 성공"),
 			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
 			@ApiResponse(responseCode = "401", description = "인증되지 않은 요청"),
+			@ApiResponse(responseCode = "403", description = "페이지 접근 권한이 없음"),
+			@ApiResponse(responseCode = "404", description = "요청한 리소스를 찾을 수 없음"),
 			@ApiResponse(responseCode = "500", description = "서버 오류")
 		}
 	)

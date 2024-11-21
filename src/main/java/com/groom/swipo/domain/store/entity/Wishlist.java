@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -33,4 +34,18 @@ public class Wishlist extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "store_id")
 	private Store store;
+
+	@Column(nullable = false)
+	private boolean isWish;
+
+	@Builder
+	private Wishlist(User user, Store store, boolean isWish) {
+		this.user = user;
+		this.store = store;
+		this.isWish = isWish;
+	}
+
+	public void updateIsWish(boolean isWish) {
+		this.isWish = isWish;
+	}
 }

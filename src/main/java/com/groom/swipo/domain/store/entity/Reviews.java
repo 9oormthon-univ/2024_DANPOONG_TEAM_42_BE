@@ -28,6 +28,9 @@ public class Reviews extends BaseEntity {
 	@Column(nullable = false)
 	private Double star;
 
+	@Column(nullable = false)
+	private String comment;
+
 	// 유저 id
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
@@ -39,7 +42,10 @@ public class Reviews extends BaseEntity {
 	private Store store;
 
 	@Builder
-	private Reviews(Double star) {
+	private Reviews(Double star, String comment, User user, Store store) {
 		this.star = star;
+		this.comment = comment;
+		this.user = user;
+		this.store = store;
 	}
 }

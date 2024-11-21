@@ -49,3 +49,7 @@ sms:
   api-secret: ${sms.api-secret}
   sender: ${sms.sender}
   provider: https://api.coolsms.co.kr
+
+app:
+  local-url: ${app.local-url}
+  prod-url: ${app.prod-url}

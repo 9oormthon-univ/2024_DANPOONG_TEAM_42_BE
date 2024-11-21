@@ -1,5 +1,8 @@
 package com.groom.swipo.global.config;
 
+import java.util.Arrays;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -8,9 +11,16 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 
 @Configuration
 public class SwaggerConfig {
+
+	@Value("${app.local-url}")
+	private String localUrl;
+
+	@Value("${app.prod-url}")
+	private String prodUrl;
 
 	private Info apiInfo() {
 		return new Info()
@@ -23,6 +33,14 @@ public class SwaggerConfig {
 	public OpenAPI openAPI() {
 		String authHeader = "Authorization";
 
+		Server localServer = new Server();
+		localServer.description("Local Server")
+			.url(localUrl);
+
+		Server prodServer = new Server();
+		prodServer.description("Production Server")
+			.url(prodUrl);
+
 		return new OpenAPI()
 			.info(apiInfo())
 			.addSecurityItem(new SecurityRequirement().addList(authHeader))
@@ -31,6 +49,7 @@ public class SwaggerConfig {
 					.name(authHeader)
 					.type(SecurityScheme.Type.HTTP)
 					.scheme("Bearer")
-					.bearerFormat("JWT")));
+					.bearerFormat("accessToken")))
+			.servers(Arrays.asList(localServer, prodServer));
 	}
 }

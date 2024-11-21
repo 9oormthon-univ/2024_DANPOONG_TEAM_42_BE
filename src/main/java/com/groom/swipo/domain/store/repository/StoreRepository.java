@@ -14,15 +14,15 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
 	// 구면 코사인 법칙
 	@Query("""
-        SELECT s FROM Store s
-        WHERE (
-            6371 * acos(
-                cos(radians(:latitude)) * cos(radians(s.latitude))
-                * cos(radians(s.longitude) - radians(:longitude))
-                + sin(radians(:latitude)) * sin(radians(s.latitude))
-            )
-        ) <= :radius
-    """)
+		    SELECT s FROM Store s
+		    WHERE (
+		        6371 * acos(
+		            cos(radians(:latitude)) * cos(radians(s.latitude))
+		            * cos(radians(s.longitude) - radians(:longitude))
+		            + sin(radians(:latitude)) * sin(radians(s.latitude))
+		        )
+		    ) <= :radius
+		""")
 	List<Store> findStoresWithinRadius(
 		@Param("latitude") double latitude,
 		@Param("longitude") double longitude,

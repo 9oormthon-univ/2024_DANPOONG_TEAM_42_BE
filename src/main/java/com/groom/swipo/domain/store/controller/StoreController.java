@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.groom.swipo.domain.store.dto.request.ReviewsRegisterRequest;
 import com.groom.swipo.domain.store.dto.response.MapQueryResponse;
 import com.groom.swipo.domain.store.dto.response.MapStoreDetailResponse;
+import com.groom.swipo.domain.store.dto.response.MapTabViewResponse;
 import com.groom.swipo.domain.store.service.ReviewsService;
 import com.groom.swipo.domain.store.service.StoreService;
 import com.groom.swipo.domain.store.service.WishlistService;
@@ -105,5 +106,11 @@ public class StoreController {
 		Principal principal) {
 		MapStoreDetailResponse data = storeService.getStoreDetails(storeId, principal);
 		return new ResTemplate<>(HttpStatus.OK, "가게 상세 조회 성공", data);
+	}
+
+	@GetMapping("/tabs")
+	public ResTemplate<MapTabViewResponse> getStoreTabs( ) {
+		MapTabViewResponse data = storeService.getStoreTabs(3L);
+		return new ResTemplate<>(HttpStatus.OK, "탭별 가게 조회 성공", data);
 	}
 }

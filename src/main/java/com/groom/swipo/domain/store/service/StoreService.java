@@ -1,19 +1,24 @@
 package com.groom.swipo.domain.store.service;
 
 import java.security.Principal;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.groom.swipo.domain.store.dto.StoreInfo;
+import com.groom.swipo.domain.store.dto.StoreTabInfo;
 import com.groom.swipo.domain.store.dto.response.MapQueryResponse;
 import com.groom.swipo.domain.store.dto.response.MapStoreDetailResponse;
+import com.groom.swipo.domain.store.dto.response.MapTabViewResponse;
 import com.groom.swipo.domain.store.entity.Reviews;
 import com.groom.swipo.domain.store.entity.Store;
 import com.groom.swipo.domain.store.entity.StoreImage;
 import com.groom.swipo.domain.store.entity.Wishlist;
+import com.groom.swipo.domain.store.entity.enums.StoreType;
 import com.groom.swipo.domain.store.exception.StoreNotFoundException;
 import com.groom.swipo.domain.store.repository.ReviewsRepository;
 import com.groom.swipo.domain.store.repository.StoreImageRepository;
@@ -83,5 +88,53 @@ public class StoreService {
 			.orElse(false);
 
 		return MapStoreDetailResponse.of(store, averageStars, isWish, reviews, images);
+	}
+
+	public MapTabViewResponse getStoreTabs(Long userId) {
+		// Long userId = Long.parseLong(principal.getName());
+		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+
+		List<Store> allStores = storeRepository.findAll();
+
+		List<StoreTabInfo> wishlists = allStores.stream()
+			.filter(store -> wishilistRepository.existsByUserAndStoreAndIsWishTrue(user, store))
+			.limit(3)
+			.map(this::convertToTabInfo)
+			.toList();
+
+		Map<StoreType, List<StoreTabInfo>> groupedTabs = allStores.stream()
+			.filter(store -> !wishilistRepository.existsByUserAndStoreAndIsWishTrue(user, store))
+			.collect(Collectors.groupingBy(
+				Store::getType,
+				() -> new EnumMap<>(StoreType.class),
+				Collectors.mapping(this::convertToTabInfo, Collectors.toList())
+			));
+
+		return MapTabViewResponse.of(
+			wishlists,
+			limit(groupedTabs.get(StoreType.PICK), 3),
+			limit(groupedTabs.get(StoreType.TREND), 5),
+			limit(groupedTabs.get(StoreType.PREFERENCE), 5),
+			limit(groupedTabs.get(StoreType.LAB), 5)
+		);
+	}
+
+	private StoreTabInfo convertToTabInfo(Store store) {
+		return StoreTabInfo.of(store,
+			store.getReviews().stream()
+				.map(Reviews::getComment)
+				.findFirst()
+				.orElse(null),
+			store.getStoreImages().stream()
+				.map(StoreImage::getUrl)
+				.findFirst()
+				.orElse(null)
+		);
+	}
+
+	private List<StoreTabInfo> limit(List<StoreTabInfo> stores, int limit) {
+		return stores == null ? List.of() : stores.stream()
+			.limit(limit)
+			.collect(Collectors.toList());
 	}
 }

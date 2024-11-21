@@ -48,6 +48,18 @@ public class StoreController {
 	}
 
 	@PostMapping("/reviews")
+	@Operation(
+		summary = "리뷰 등록",
+		description = "해당 가게에 대한 리뷰를 등록합니다.",
+		responses = {
+			@ApiResponse(responseCode = "204", description = "리뷰 등록 성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "401", description = "인증되지 않은 요청"),
+			@ApiResponse(responseCode = "403", description = "페이지 접근 권한이 없음"),
+			@ApiResponse(responseCode = "404", description = "요청한 리소스를 찾을 수 없음"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
+		}
+	)
 	public ResTemplate<Void> registerReview(@RequestBody ReviewsRegisterRequest request, Principal principal) {
 		reviewsService.registerReview(request, principal);
 		return new ResTemplate<>(HttpStatus.NO_CONTENT, "리뷰 등록 성공");

@@ -89,10 +89,10 @@ public class UserController {
 			@ApiResponse(responseCode = "500", description = "서버 오류")
 		}
 	)
-	public ResTemplate<Void> getPhoneCheck(@RequestBody PhoneCheckRequest request) {
+	public ResTemplate<String> getPhoneCheck(@RequestBody PhoneCheckRequest request) {
 		LocalDateTime sentAt = LocalDateTime.now();
 		smsService.sendVerificationMessage(request.phone(), sentAt); // 인스턴스 메서드 호출
-		return new ResTemplate<>(HttpStatus.OK, "송신 완료", null);
+		return new ResTemplate<>(HttpStatus.OK, "송신 완료", "");
 	}
 
 	@PostMapping("/phone-verification")

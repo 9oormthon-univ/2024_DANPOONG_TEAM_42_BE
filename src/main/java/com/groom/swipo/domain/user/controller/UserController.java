@@ -89,10 +89,10 @@ public class UserController {
 			@ApiResponse(responseCode = "500", description = "서버 오류")
 		}
 	)
-	public ResTemplate<String> getPhoneCheck(@RequestBody PhoneCheckRequest request) {
+	public ResTemplate<Void> getPhoneCheck(@RequestBody PhoneCheckRequest request) {
 		LocalDateTime sentAt = LocalDateTime.now();
 		smsService.sendVerificationMessage(request.phone(), sentAt); // 인스턴스 메서드 호출
-		return new ResTemplate<>(HttpStatus.OK, "송신 완료", "");
+		return new ResTemplate<>(HttpStatus.OK, "송신 완료");
 	}
 
 	@PostMapping("/phone-verification")
@@ -110,7 +110,7 @@ public class UserController {
 	public ResTemplate<Void> verificationByCode(@RequestBody PhoneVerificationRequest request) {
 		LocalDateTime verifiedAt = LocalDateTime.now();
 		smsService.verifyCode(request.phone(), request.code(), verifiedAt);
-		return new ResTemplate<>(HttpStatus.OK, "인증 완료", null);
+		return new ResTemplate<>(HttpStatus.OK, "인증 완료");
 	}
 
 	@PostMapping("/register")
@@ -143,7 +143,7 @@ public class UserController {
 	)
 	public ResTemplate<Void> checkPassword(@RequestBody PwdRequest request, Principal principal) {
 		userService.checkPassword(request, principal);
-		 return new ResTemplate<>(HttpStatus.OK, "비밀번호 일치", null);
+		 return new ResTemplate<>(HttpStatus.OK, "비밀번호 일치");
 	}
 
 	// 비밀번호 변경
@@ -161,7 +161,7 @@ public class UserController {
 	)
 	public ResTemplate<Void> editPassword(@RequestBody PwdRequest request, Principal principal) {
 		userService.editPassword(request, principal);
-		return new ResTemplate<>(HttpStatus.OK, "비밀번호 변경완료", null);
+		return new ResTemplate<>(HttpStatus.OK, "비밀번호 변경완료");
 	}
 	// 회원탈퇴
 	@DeleteMapping("/delete")
@@ -177,7 +177,7 @@ public class UserController {
 	)
 	public ResTemplate<Void> deleteUser(Principal principal) {
 		userService.deleteUser(principal);
-		return new ResTemplate<>(HttpStatus.OK, "탈퇴완료", null);
+		return new ResTemplate<>(HttpStatus.OK, "탈퇴완료");
 	}
 
 

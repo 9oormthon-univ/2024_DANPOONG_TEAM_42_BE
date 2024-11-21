@@ -1,8 +1,10 @@
 package com.groom.swipo.domain.store.controller;
 
 import java.security.Principal;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.groom.swipo.domain.store.dto.request.ReviewsRegisterRequest;
+import com.groom.swipo.domain.store.dto.response.MapQueryResponse;
 import com.groom.swipo.domain.store.service.ReviewsService;
+import com.groom.swipo.domain.store.service.StoreService;
 import com.groom.swipo.domain.store.service.WishlistService;
 import com.groom.swipo.global.template.ResTemplate;
 
@@ -27,6 +31,7 @@ public class StoreController {
 
 	private final WishlistService wishlistService;
 	private final ReviewsService reviewsService;
+	private final StoreService storeService;
 
 	@PostMapping("/wish")
 	@Operation(
@@ -63,5 +68,11 @@ public class StoreController {
 	public ResTemplate<Void> registerReview(@RequestBody ReviewsRegisterRequest request, Principal principal) {
 		reviewsService.registerReview(request, principal);
 		return new ResTemplate<>(HttpStatus.NO_CONTENT, "리뷰 등록 성공");
+	}
+
+	@GetMapping("/map")
+	public ResTemplate<MapQueryResponse> getStores(Principal principal) {
+		MapQueryResponse data = storeService.getStores(principal);
+		return new ResTemplate<>(HttpStatus.OK, "가게 데이터 조회 성공", data);
 	}
 }

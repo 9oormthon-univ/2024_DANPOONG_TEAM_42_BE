@@ -39,6 +39,9 @@ oauth:
     client-secret: ${oauth.kakao.client-secret}
     redirect-uri: ${oauth.kakao.redirect-uri}
 
+  apple:
+    public-key-url: ${oauth.apple.public-key-url}
+
 imp:
   api:
     key: ${imp.api.key}

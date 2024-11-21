@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.groom.swipo.domain.auth.dto.request.AppleLoginRequest;
 import com.groom.swipo.domain.auth.dto.request.KakaoLoginRequest;
 import com.groom.swipo.domain.auth.dto.request.TokenRefreshRequest;
-import com.groom.swipo.domain.auth.dto.response.KakaoLoginResponse;
+import com.groom.swipo.domain.auth.dto.response.SocialLoginResponse;
 import com.groom.swipo.domain.auth.dto.response.TokenRefreshResponse;
+import com.groom.swipo.domain.auth.service.AppleLoginService;
 import com.groom.swipo.domain.auth.service.KakaoLoginService;
 import com.groom.swipo.domain.auth.service.TokenRenewService;
 import com.groom.swipo.domain.user.dto.request.PhoneCheckRequest;
@@ -38,6 +40,7 @@ public class UserController {
 	private final UserService userService;
 	private final SmsService smsService;
 	private final KakaoLoginService kakaoLoginService;
+	private final AppleLoginService appleLoginService;
 	private final TokenRenewService tokenRenewService;
 
 	@PostMapping("/kakao")
@@ -53,8 +56,29 @@ public class UserController {
 			@ApiResponse(responseCode = "500", description = "서버 오류")
 		}
 	)
-	public ResTemplate<KakaoLoginResponse> kakaoLogin(@RequestBody KakaoLoginRequest request) {
-		KakaoLoginResponse data = kakaoLoginService.kakaoLogin(request.kakaoCode());
+	public ResTemplate<SocialLoginResponse> kakaoLogin(@RequestBody KakaoLoginRequest request) {
+		SocialLoginResponse data = kakaoLoginService.kakaoLogin(request.kakaoCode());
+		if (data.userId() == null) {
+			return new ResTemplate<>(HttpStatus.I_AM_A_TEAPOT, "회원가입 필요", data);
+		}
+		return new ResTemplate<>(HttpStatus.OK, "로그인 성공", data);
+	}
+
+	@PostMapping("/apple")
+	@Operation(
+		summary = "애플 로그인",
+		description = "애플 identity token을 사용하여 로그인 또는 회원가입 필요 여부를 판별합니다. DB에 사용자 정보가 있으면 로그인 성공, 없으면 회원가입 필요 상태를 반환합니다.",
+		security = {},
+		responses = {
+			@ApiResponse(responseCode = "200", description = "로그인 성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "401", description = "인증되지 않은 요청"),
+			@ApiResponse(responseCode = "418", description = "회원가입 필요"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
+		}
+	)
+	public ResTemplate<SocialLoginResponse> appleLogin(@RequestBody AppleLoginRequest request) {
+		SocialLoginResponse data = appleLoginService.appleLogin(request.token());
 		if (data.userId() == null) {
 			return new ResTemplate<>(HttpStatus.I_AM_A_TEAPOT, "회원가입 필요", data);
 		}

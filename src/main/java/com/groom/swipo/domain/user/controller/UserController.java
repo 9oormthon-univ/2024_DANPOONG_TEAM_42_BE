@@ -97,7 +97,7 @@ public class UserController {
 
 	@PostMapping("/phone-verification")
 	@Operation(
-		summary = "휴대폰 인증",
+		summary = "휴대폰 인증 검증",
 		description = "사용자가 받은 인증코드와 서버에서 보낸 인증코드를 대조하여 검증",
 		security = {},
 		responses = {

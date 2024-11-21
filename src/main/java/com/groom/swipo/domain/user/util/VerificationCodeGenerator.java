@@ -6,7 +6,7 @@ import java.util.Random;
 import com.groom.swipo.domain.user.entity.VerificationCode;
 
 public class VerificationCodeGenerator {
-	private static final Integer EXPIRATION_TIME_IN_MINUTES = 5;
+	private static final Integer EXPIRATION_TIME_IN_MINUTES = 3;
 
 	public static VerificationCode generateVerificationCode(String to, LocalDateTime sentAt) {
 		String code = generateRandomFourDigitNumber(); // 무작위 4자리 숫자 생성

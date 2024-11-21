@@ -71,6 +71,18 @@ public class StoreController {
 	}
 
 	@GetMapping("/map")
+	@Operation(
+		summary = "가게 데이터 조회",
+		description = "관심 가게와 전체 가게 리스트를 조회합니다. 관심 가게로 분류되어 있으면, 전체 가게 리스트에는 중복으로 포함되지 않습니다.",
+		responses = {
+			@ApiResponse(responseCode = "200", description = "가게 데이터 조회 성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "401", description = "인증되지 않은 요청"),
+			@ApiResponse(responseCode = "403", description = "페이지 접근 권한이 없음"),
+			@ApiResponse(responseCode = "404", description = "요청한 리소스를 찾을 수 없음"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
+		}
+	)
 	public ResTemplate<MapQueryResponse> getStores(Principal principal) {
 		MapQueryResponse data = storeService.getStores(principal);
 		return new ResTemplate<>(HttpStatus.OK, "가게 데이터 조회 성공", data);

@@ -33,11 +33,13 @@ public class StoreService {
 
 		List<Store> allStores = storeRepository.findAll();
 
+		// 관심 등록된 가게 필터링
 		List<StoreInfo> wishlist = allStores.stream()
 			.filter(store -> wishilistRepository.existsByUserAndStoreAndIsWishTrue(user, store))
 			.map(StoreInfo::from)
 			.collect(Collectors.toList());
 
+		// 관심 등록되지 않은 가게 필터링
 		List<StoreInfo> nonWishlist = allStores.stream()
 			.filter(store -> !wishilistRepository.existsByUserAndStoreAndIsWishTrue(user, store))
 			.map(StoreInfo::from)

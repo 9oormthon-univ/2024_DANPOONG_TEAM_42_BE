@@ -1,7 +1,6 @@
 package com.groom.swipo.domain.store.controller;
 
 import java.security.Principal;
-import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.groom.swipo.domain.store.dto.request.ReviewsRegisterRequest;
 import com.groom.swipo.domain.store.dto.response.MapQueryResponse;
+import com.groom.swipo.domain.store.dto.response.MapStoreDetailResponse;
 import com.groom.swipo.domain.store.service.ReviewsService;
 import com.groom.swipo.domain.store.service.StoreService;
 import com.groom.swipo.domain.store.service.WishlistService;
@@ -86,5 +86,12 @@ public class StoreController {
 	public ResTemplate<MapQueryResponse> getStores(Principal principal) {
 		MapQueryResponse data = storeService.getStores(principal);
 		return new ResTemplate<>(HttpStatus.OK, "가게 데이터 조회 성공", data);
+	}
+
+	@GetMapping("/details")
+	public ResTemplate<MapStoreDetailResponse> getStoreDetails(@RequestParam(name = "storeId") Long storeId,
+		Principal principal) {
+		MapStoreDetailResponse data = storeService.getStoreDetails(storeId, principal);
+		return new ResTemplate<>(HttpStatus.OK, "가게 상세 조회 성공", data);
 	}
 }

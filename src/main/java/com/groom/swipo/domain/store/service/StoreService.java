@@ -62,7 +62,10 @@ public class StoreService {
 		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 		Store store = storeRepository.findById(storeId).orElseThrow(StoreNotFoundException::new);
 
+		// 해당 가게 리뷰 조회
 		List<Reviews> reviews = reviewsRepository.findAllByStore(store);
+
+		// 평균 별점 계산 (소수 첫째 자리까지 반올림)
 		Double averageStars = reviews.stream()
 			.mapToDouble(Reviews::getStar)
 			.average()
@@ -71,8 +74,10 @@ public class StoreService {
 			.findFirst()
 			.orElse(0.0);
 
+		// 가게 이미지
 		List<StoreImage> images = storeImageRepository.findAllByStore(store);
 
+		// 사용자가 관심 등록했는지 여부
 		boolean isWish = wishilistRepository.findByUserAndStore(user, store)
 			.map(Wishlist::isWish)
 			.orElse(false);

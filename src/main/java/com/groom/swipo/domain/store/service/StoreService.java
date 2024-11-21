@@ -90,8 +90,8 @@ public class StoreService {
 		return MapStoreDetailResponse.of(store, averageStars, isWish, reviews, images);
 	}
 
-	public MapTabViewResponse getStoreTabs(Long userId) {
-		// Long userId = Long.parseLong(principal.getName());
+	public MapTabViewResponse getStoreTabs(Principal principal) {
+		Long userId = Long.parseLong(principal.getName());
 		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
 		List<Store> allStores = storeRepository.findAll();
@@ -114,7 +114,7 @@ public class StoreService {
 			wishlists,
 			limit(groupedTabs.get(StoreType.PICK), 3),
 			limit(groupedTabs.get(StoreType.TREND), 5),
-			limit(groupedTabs.get(StoreType.PREFERENCE), 5),
+			limit(groupedTabs.get(StoreType.TASTE), 5),
 			limit(groupedTabs.get(StoreType.LAB), 5)
 		);
 	}

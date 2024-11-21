@@ -11,16 +11,16 @@ public record MapTabViewResponse(
 	List<StoreTabInfo> wishlists,
 	List<StoreTabInfo> picks,
 	List<StoreTabInfo> trends,
-	List<StoreTabInfo> preferences,
+	List<StoreTabInfo> tastes,
 	List<StoreTabInfo> labs
 ) {
 	public static MapTabViewResponse of(List<StoreTabInfo> wishlists, List<StoreTabInfo> picks,
-		List<StoreTabInfo> trends, List<StoreTabInfo> preferences, List<StoreTabInfo> labs) {
+		List<StoreTabInfo> trends, List<StoreTabInfo> tastes, List<StoreTabInfo> labs) {
 		return MapTabViewResponse.builder()
 			.wishlists(wishlists)
 			.picks(picks)
 			.trends(trends)
-			.preferences(preferences)
+			.tastes(tastes)
 			.labs(labs)
 			.build();
 	}

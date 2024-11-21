@@ -4,10 +4,13 @@ import java.security.Principal;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.groom.swipo.domain.store.dto.request.ReviewsRegisterRequest;
+import com.groom.swipo.domain.store.service.ReviewsService;
 import com.groom.swipo.domain.store.service.WishlistService;
 import com.groom.swipo.global.template.ResTemplate;
 
@@ -23,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class StoreController {
 
 	private final WishlistService wishlistService;
+	private final ReviewsService reviewsService;
 
 	@PostMapping("/wish")
 	@Operation(
@@ -41,5 +45,11 @@ public class StoreController {
 		@RequestParam(name = "isWish") boolean isWish, Principal principal) {
 		wishlistService.updateWish(storeId, isWish, principal);
 		return new ResTemplate<>(HttpStatus.NO_CONTENT, "관심 등록/해제 성공");
+	}
+
+	@PostMapping("/reviews")
+	public ResTemplate<Void> registerReview(@RequestBody ReviewsRegisterRequest request, Principal principal) {
+		reviewsService.registerReview(request, principal);
+		return new ResTemplate<>(HttpStatus.NO_CONTENT, "리뷰 등록 성공");
 	}
 }

@@ -109,8 +109,18 @@ public class StoreController {
 	}
 
 	@GetMapping("/tabs")
-	public ResTemplate<MapTabViewResponse> getStoreTabs( ) {
-		MapTabViewResponse data = storeService.getStoreTabs(3L);
+	@Operation(
+		summary = "탭별 가게 조회",
+		description = "관심 가게와 PICK, TREND, TASTE, LAB 카테고리별로 대표 가게 리스트를 조회합니다. 관심 가게와 PICK은 3개, 나머지 카테고리는 5개씩 반환합니다.",
+		responses = {
+			@ApiResponse(responseCode = "200", description = "탭별 가게 조회 성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "401", description = "인증되지 않은 요청"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
+		}
+	)
+	public ResTemplate<MapTabViewResponse> getStoreTabs(Principal principal) {
+		MapTabViewResponse data = storeService.getStoreTabs(principal);
 		return new ResTemplate<>(HttpStatus.OK, "탭별 가게 조회 성공", data);
 	}
 }

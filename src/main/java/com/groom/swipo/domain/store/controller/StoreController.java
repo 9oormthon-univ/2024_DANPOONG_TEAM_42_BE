@@ -14,6 +14,7 @@ import com.groom.swipo.domain.store.dto.request.ReviewsRegisterRequest;
 import com.groom.swipo.domain.store.dto.response.MapQueryResponse;
 import com.groom.swipo.domain.store.dto.response.MapStoreDetailResponse;
 import com.groom.swipo.domain.store.dto.response.MapTabViewResponse;
+import com.groom.swipo.domain.store.dto.response.StoreSearchResponse;
 import com.groom.swipo.domain.store.service.ReviewsService;
 import com.groom.swipo.domain.store.service.StoreService;
 import com.groom.swipo.domain.store.service.WishlistService;
@@ -124,5 +125,29 @@ public class StoreController {
 	public ResTemplate<MapTabViewResponse> getStoreTabs(Principal principal) {
 		MapTabViewResponse data = storeService.getStoreTabs(principal);
 		return new ResTemplate<>(HttpStatus.OK, "탭별 가게 조회 성공", data);
+	}
+
+	@GetMapping("/search")
+	@Operation(
+		summary = "가게 검색",
+		description = "키워드, 카테고리, 타입별, 페이지로 필터링된 가게 리스트를 반환합니다.",
+		responses = {
+			@ApiResponse(responseCode = "200", description = "가게 검색 성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "401", description = "인증되지 않은 요청"),
+			@ApiResponse(responseCode = "403", description = "페이지 접근 권한이 없음"),
+			@ApiResponse(responseCode = "404", description = "요청한 리소스를 찾을 수 없음"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
+		}
+	)
+	public ResTemplate<StoreSearchResponse> searchStores(
+		@RequestParam(name = "keyword") String keyword,
+		@RequestParam(name = "category", defaultValue = "all") String category,
+		@RequestParam(name = "type") String type,
+		@RequestParam(name = "page", defaultValue = "0") int page,
+		Principal principal
+	) {
+		StoreSearchResponse data = storeService.searchStores(keyword, category, type, page, principal);
+		return new ResTemplate<>(HttpStatus.OK, "가게 검색 성공", data);
 	}
 }

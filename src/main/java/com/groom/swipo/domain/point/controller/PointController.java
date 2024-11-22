@@ -54,9 +54,8 @@ public class PointController {
 		security = {},
 		responses = {
 			@ApiResponse(responseCode = "201", description = "카드 등록 성공"),
-			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "400", description = "유효하지 않은 동네"),
 			@ApiResponse(responseCode = "401", description = "유효하지 않은 인증 토큰"),
-			@ApiResponse(responseCode = "403", description = "동네 인증이 안된 경우"),
 			@ApiResponse(responseCode = "409", description = "중복 카드 등록"),
 			@ApiResponse(responseCode = "500", description = "서버 오류")
 		}

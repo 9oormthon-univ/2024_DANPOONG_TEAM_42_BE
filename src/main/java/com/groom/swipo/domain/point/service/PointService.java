@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.groom.swipo.domain.point.dto.PieceInfo;
+import com.groom.swipo.domain.point.dto.Request.SwipstoneSwapResquest;
 import com.groom.swipo.domain.point.dto.Response.SwipstoneResponse;
+import com.groom.swipo.domain.point.dto.Response.SwipstoneSwapResponse;
 import com.groom.swipo.domain.point.entity.MyPiece;
 import com.groom.swipo.domain.point.exception.PiecesNotFoundException;
 import com.groom.swipo.domain.point.repository.MyPieceRepository;
@@ -35,7 +37,7 @@ public class PointService {
 		}
 
 		List<PieceInfo> pieces = myPieces.stream()
-			.map(myPiece -> PieceInfo.from(myPiece.getPiece()))
+			.map(myPiece -> PieceInfo.from(myPiece ,myPiece.getPiece()))
 			.toList();
 
 		Integer piecesNum = pieces.size();

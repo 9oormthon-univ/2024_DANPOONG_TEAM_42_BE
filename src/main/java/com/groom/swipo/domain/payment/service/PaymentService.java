@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.groom.swipo.domain.payment.dto.request.PaymentCompleteRequest;
 import com.groom.swipo.domain.payment.dto.response.PaymentCompleteResponse;
 import com.groom.swipo.domain.payment.dto.response.PaymentPageResponse;
+import com.groom.swipo.domain.payment.entity.Paylist;
 import com.groom.swipo.domain.payment.exception.PasswordMismatchException;
 import com.groom.swipo.domain.point.entity.Card;
 import com.groom.swipo.domain.point.exception.CardNotFoundException;
@@ -66,6 +67,9 @@ public class PaymentService {
 
 		user.getPay().updatePay(-netPayment);
 		card.updatePoint(earnedPoints - request.usedPoints());
+
+		Paylist paylist = request.toEntity(user.getPay(), store);
+		user.getPay().getPaylists().add(paylist);
 
 		return PaymentCompleteResponse.of(request.amount(), earnedPoints, user.getPay().getTotalPay());
 	}

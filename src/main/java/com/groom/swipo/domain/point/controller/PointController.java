@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.groom.swipo.domain.point.dto.Request.SwipstoneSwapRequest;
+import com.groom.swipo.domain.point.dto.Response.PointHomeResponse;
 import com.groom.swipo.domain.point.dto.Response.SwipstoneResponse;
 import com.groom.swipo.domain.point.dto.Response.SwipstoneSwapResponse;
 import com.groom.swipo.domain.point.service.PointService;
@@ -26,6 +27,24 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "포인트", description = "포인트 관련 API 그룹")
 public class PointController {
 	private final PointService pointService;
+
+	@GetMapping("/home")
+	@Operation(
+		summary = "스윕페이/포인트 홈 조회",
+		description = "상단 스웹페이 탭 클릭시 조회되는 정보 제공",
+		security = {},
+		responses = {
+			@ApiResponse(responseCode = "200", description = "조회 성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "401", description = "인증되지 않은 요청"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
+		}
+	)
+	public ResTemplate<PointHomeResponse> getHome(Principal principal) {
+		PointHomeResponse data = pointService.getHome(principal);
+		return new ResTemplate<>(HttpStatus.OK, "조회 성공", data);
+	}
+
 
 	@GetMapping("/swipstone")
 	@Operation(

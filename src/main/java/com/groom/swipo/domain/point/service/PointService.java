@@ -6,17 +6,25 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.groom.swipo.domain.payment.dto.PaylistInfo;
 import com.groom.swipo.domain.payment.entity.Pay;
+import com.groom.swipo.domain.payment.entity.Paylist;
 import com.groom.swipo.domain.payment.repository.PayRepository;
+import com.groom.swipo.domain.payment.repository.PaylistRepository;
 import com.groom.swipo.domain.point.dto.PieceInfo;
 import com.groom.swipo.domain.point.dto.Request.SwipstoneSwapRequest;
+import com.groom.swipo.domain.point.dto.Response.PointHomeResponse;
 import com.groom.swipo.domain.point.dto.Response.SwipstoneResponse;
 import com.groom.swipo.domain.point.dto.Response.SwipstoneSwapResponse;
+import com.groom.swipo.domain.point.entity.Card;
 import com.groom.swipo.domain.point.entity.MyPiece;
 import com.groom.swipo.domain.point.exception.PiecesNotFoundException;
+import com.groom.swipo.domain.point.repository.CardRepository;
 import com.groom.swipo.domain.point.repository.MyPieceRepository;
+import com.groom.swipo.domain.point.dto.CardInfo;
 import com.groom.swipo.domain.user.entity.User;
 import com.groom.swipo.domain.user.exception.UserNotFoundException;
+import com.groom.swipo.domain.payment.exception.PayNotFoundException;
 import com.groom.swipo.domain.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -28,6 +36,30 @@ public class PointService {
 	private final UserRepository userRepository;
 	private final MyPieceRepository myPieceRepository;
 	private final PayRepository payRepository;
+	private final CardRepository cardRepository;
+	private final PaylistRepository paylistRepository;
+
+	public PointHomeResponse getHome(Principal principal) {
+		Long userId = Long.parseLong(principal.getName());
+		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+
+		// 사용자 Pay 정보 조회
+		Pay pay = payRepository.findByUser(user).orElseThrow(PayNotFoundException::new);
+
+		// 사용자 카드 정보 조회
+		List<Card> cards = cardRepository.findAllByUser(user);
+		List<CardInfo> cardInfos = cards.stream()
+			.map(CardInfo::of)
+			.toList();
+
+		// 최근 페이 거래 내역 조회 (최대 5개)
+		List<Paylist> recentPaylists = paylistRepository.findTop5ByPayOrderByCreatedAtDesc(pay);
+		List<PaylistInfo> paylistInfos = recentPaylists.stream()
+			.map(paylist -> PaylistInfo.of(paylist, paylist.getStore()))
+			.toList();
+
+		return PointHomeResponse.of(pay, cardInfos.size(), cardInfos, paylistInfos);
+	}
 
 	public SwipstoneResponse getSwipstone(Principal principal) {
 		Long userId = Long.parseLong(principal.getName());

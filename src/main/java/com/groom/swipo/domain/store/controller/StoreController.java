@@ -128,6 +128,18 @@ public class StoreController {
 	}
 
 	@GetMapping("/search")
+	@Operation(
+		summary = "가게 검색",
+		description = "키워드, 카테고리, 타입별, 페이지로 필터링된 가게 리스트를 반환합니다.",
+		responses = {
+			@ApiResponse(responseCode = "200", description = "가게 검색 성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "401", description = "인증되지 않은 요청"),
+			@ApiResponse(responseCode = "403", description = "페이지 접근 권한이 없음"),
+			@ApiResponse(responseCode = "404", description = "요청한 리소스를 찾을 수 없음"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
+		}
+	)
 	public ResTemplate<StoreSearchResponse> searchStores(
 		@RequestParam(name = "keyword") String keyword,
 		@RequestParam(name = "category", defaultValue = "all") String category,

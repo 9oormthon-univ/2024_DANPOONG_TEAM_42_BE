@@ -1,5 +1,8 @@
 package com.groom.swipo.global.common.enums;
 
+import java.util.Arrays;
+import com.groom.swipo.domain.point.exception.InvalidRegionException;
+
 public enum Area {
 	CODE_02("02", "서울"),
 	CODE_031("031", "경기도"),
@@ -20,7 +23,7 @@ public enum Area {
 	CODE_064("064", "제주");
 
 	private final String code;
-	private final String regionName; // 지역명 추가
+	private final String regionName;
 
 	Area(String code, String regionName) {
 		this.code = code;
@@ -31,7 +34,15 @@ public enum Area {
 		return code;
 	}
 
-	public String getRegionName() { // 지역명을 반환하는 메서드
+	public String getRegionName() {
 		return regionName;
+	}
+
+	// 지역명을 기준으로 Area 반환
+	public static Area fromRegionName(String regionName) {
+		return Arrays.stream(values())
+			.filter(area -> area.getRegionName().equals(regionName))
+			.findFirst()
+			.orElseThrow(InvalidRegionException::new); // 여기서 에러 핸들링하는게 맞겠죠..? 클린하겠죠? ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ
 	}
 }

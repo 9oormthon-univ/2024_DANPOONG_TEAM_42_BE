@@ -2,6 +2,7 @@ package com.groom.swipo.domain.payment.service;
 
 import java.security.Principal;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +30,7 @@ public class PaymentService {
 
 	private final UserRepository userRepository;
 	private final StoreRepository storeRepository;
+	private final PasswordEncoder passwordEncoder;
 
 	public PaymentPageResponse getPaymentPage(Long storeId, Principal principal) {
 		Long userId = Long.parseLong(principal.getName());
@@ -54,7 +56,7 @@ public class PaymentService {
 			.findFirst()
 			.orElseThrow(CardNotFoundException::new);
 
-		if (!user.getPassword().equals(request.password())) {
+		if (!passwordEncoder.matches(request.password(), user.getPassword())) {
 			throw new PasswordMismatchException();
 		}
 

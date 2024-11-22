@@ -50,6 +50,6 @@ public class SwaggerConfig {
 					.type(SecurityScheme.Type.HTTP)
 					.scheme("Bearer")
 					.bearerFormat("accessToken")))
-			.servers(Arrays.asList(localServer, prodServer));
+			.servers(Arrays.asList(prodServer, localServer));
 	}
 }

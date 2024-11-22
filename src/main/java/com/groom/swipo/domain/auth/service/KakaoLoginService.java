@@ -102,4 +102,17 @@ public class KakaoLoginService {
 
 		return new String[] {providerId, profileImageUrl};
 	}
+
+	@Transactional
+	public SocialLoginResponse kakaoLoginWithAccessToken(String kakaoAccessToken) {
+		try {
+			String[] userInfo = getKakaoUserInfo(kakaoAccessToken);
+
+			return userRepository.findByProviderAndProviderId(Provider.KAKAO, userInfo[0])
+				.map(this::handleExistingUserLogin)
+				.orElseGet(() -> SocialLoginResponse.of(userInfo[0], userInfo[1]));
+		} catch (JsonProcessingException e) {
+			throw new KakaoAuthException();
+		}
+	}
 }

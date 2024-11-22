@@ -43,6 +43,27 @@ public class UserController {
 	private final AppleLoginService appleLoginService;
 	private final TokenRenewService tokenRenewService;
 
+	@PostMapping("/kakao/accessToken")
+	@Operation(
+		summary = "카카오 로그인",
+		description = "카카오 액세스 토큰을 사용하여 로그인 또는 회원가입 필요 여부를 판별합니다. DB에 사용자 정보가 있으면 로그인 성공, 없으면 회원가입 필요 상태를 반환합니다.",
+		security = {},
+		responses = {
+			@ApiResponse(responseCode = "200", description = "로그인 성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "401", description = "인증되지 않은 요청"),
+			@ApiResponse(responseCode = "418", description = "회원가입 필요"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
+		}
+	)
+	public ResTemplate<SocialLoginResponse> kakaoLoginWithAccessToken(@RequestBody KakaoLoginRequest request) {
+		SocialLoginResponse data = kakaoLoginService.kakaoLoginWithAccessToken(request.kakaoCode());
+		if (data.userId() == null) {
+			return new ResTemplate<>(HttpStatus.I_AM_A_TEAPOT, "회원가입 필요", data);
+		}
+		return new ResTemplate<>(HttpStatus.OK, "로그인 성공", data);
+	}
+
 	@PostMapping("/kakao")
 	@Operation(
 		summary = "카카오 로그인",
@@ -167,7 +188,7 @@ public class UserController {
 	)
 	public ResTemplate<Void> checkPassword(@RequestBody PwdRequest request, Principal principal) {
 		userService.checkPassword(request, principal);
-		 return new ResTemplate<>(HttpStatus.OK, "비밀번호 일치");
+		return new ResTemplate<>(HttpStatus.OK, "비밀번호 일치");
 	}
 
 	// 비밀번호 변경
@@ -187,6 +208,7 @@ public class UserController {
 		userService.editPassword(request, principal);
 		return new ResTemplate<>(HttpStatus.OK, "비밀번호 변경완료");
 	}
+
 	// 회원탈퇴
 	@DeleteMapping("/delete")
 	@Operation(
@@ -203,7 +225,6 @@ public class UserController {
 		userService.deleteUser(principal);
 		return new ResTemplate<>(HttpStatus.OK, "탈퇴완료");
 	}
-
 
 	// 마이페이지 조회
 }

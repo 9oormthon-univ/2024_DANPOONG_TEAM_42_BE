@@ -24,7 +24,8 @@ public class SecurityConfig {
 		"swagger-ui/**",
 		"v3/api-docs/**",
 		"/v1/**",
-		"/profile"
+		"/profile",
+		"/**"  // 테스트용
 	};
 
 	@Bean

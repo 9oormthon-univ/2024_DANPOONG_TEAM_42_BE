@@ -10,7 +10,7 @@ public record PieceInfo(
 	String myPieceId,
 	String pieceName
 ) {
-	public static PieceInfo from(MyPiece myPiece,Piece piece) {
+	public static PieceInfo of(MyPiece myPiece,Piece piece) {
 		return PieceInfo.builder()
 			.myPieceId(String.valueOf(myPiece.getId()))
 			.pieceName(piece.getName())

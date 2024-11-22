@@ -1,7 +1,6 @@
 package com.groom.swipo.domain.user.entity;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import com.groom.swipo.global.entity.BaseEntity;
 

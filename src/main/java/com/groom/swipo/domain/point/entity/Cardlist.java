@@ -1,13 +1,10 @@
 package com.groom.swipo.domain.point.entity;
 
 import com.groom.swipo.domain.store.entity.Store;
-import com.groom.swipo.global.common.enums.Area;
 import com.groom.swipo.global.entity.BaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

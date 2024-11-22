@@ -13,7 +13,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import lombok.RequiredArgsConstructor;
 
 // 해당 코드는 Jwt 전체에 대해 검증하는 것이 아닌 애플 로그인떄 받아오는 itentity token 검증용
 @Component

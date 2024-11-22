@@ -41,7 +41,7 @@ public class PointService {
 		}
 
 		List<PieceInfo> pieces = myPieces.stream()
-			.map(myPiece -> PieceInfo.from(myPiece, myPiece.getPiece()))
+			.map(myPiece -> PieceInfo.of(myPiece, myPiece.getPiece()))
 			.toList();
 
 		Integer piecesNum = pieces.size();

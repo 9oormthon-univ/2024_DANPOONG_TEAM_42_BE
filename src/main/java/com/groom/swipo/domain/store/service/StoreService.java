@@ -9,15 +9,18 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.groom.swipo.domain.store.dto.StoreDetail;
 import com.groom.swipo.domain.store.dto.StoreInfo;
 import com.groom.swipo.domain.store.dto.StoreTabInfo;
 import com.groom.swipo.domain.store.dto.response.MapQueryResponse;
 import com.groom.swipo.domain.store.dto.response.MapStoreDetailResponse;
 import com.groom.swipo.domain.store.dto.response.MapTabViewResponse;
+import com.groom.swipo.domain.store.dto.response.StoreSearchResponse;
 import com.groom.swipo.domain.store.entity.Reviews;
 import com.groom.swipo.domain.store.entity.Store;
 import com.groom.swipo.domain.store.entity.StoreImage;
 import com.groom.swipo.domain.store.entity.Wishlist;
+import com.groom.swipo.domain.store.entity.enums.StoreCategory;
 import com.groom.swipo.domain.store.entity.enums.StoreType;
 import com.groom.swipo.domain.store.exception.StoreNotFoundException;
 import com.groom.swipo.domain.store.repository.ReviewsRepository;
@@ -27,6 +30,7 @@ import com.groom.swipo.domain.store.repository.WishilistRepository;
 import com.groom.swipo.domain.user.entity.User;
 import com.groom.swipo.domain.user.exception.UserNotFoundException;
 import com.groom.swipo.domain.user.repository.UserRepository;
+import com.groom.swipo.global.common.PageInfo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,6 +38,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class StoreService {
+
+	private static final int PAGE_SIZE = 5;
 
 	private final UserRepository userRepository;
 	private final WishilistRepository wishilistRepository;
@@ -141,5 +147,100 @@ public class StoreService {
 		return stores == null ? List.of() : stores.stream()
 			.limit(limit)
 			.collect(Collectors.toList());
+	}
+
+	public StoreSearchResponse searchStores(String keyword, String category, String type, int page,
+		Principal principal) {
+		Long userId = Long.parseLong(principal.getName());
+		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+
+		List<Store> stores = storeRepository.findAll();
+		stores = filterByKeyword(stores, keyword);
+		stores = filterByCategory(stores, category);
+		stores = filterByType(stores, type, user);
+
+		PageInfo pageInfo = PageInfo.builder()
+			.currentPage(page)
+			.totalPages((int)Math.ceil((double)stores.size() / PAGE_SIZE))
+			.totalItems(stores.size())
+			.build();
+
+		List<StoreDetail> storeDetails = stores.stream()
+			.skip((long)page * PAGE_SIZE)
+			.limit(PAGE_SIZE)
+			.map(store -> convertToStoreDetail(store, user))
+			.toList();
+
+		return StoreSearchResponse.of(pageInfo, storeDetails);
+	}
+
+	private List<Store> filterByKeyword(List<Store> stores, String keyword) {
+		if (keyword == null || keyword.isBlank()) {
+			return stores;
+		}
+
+		return stores.stream()
+			.filter(store -> store.getName().contains(keyword) || store.getAddress().contains(keyword))
+			.toList();
+	}
+
+	private List<Store> filterByCategory(List<Store> stores, String category) {
+		if (category.equals("all")) {
+			return stores;
+		}
+
+		try {
+			return stores.stream()
+				.filter(store -> store.getCategory().equals(StoreCategory.valueOf(category.toUpperCase())))
+				.toList();
+		} catch (IllegalArgumentException e) {
+			throw new StoreNotFoundException("존재하지 않는 카테고리입니다.");
+		}
+	}
+
+	private List<Store> filterByType(List<Store> stores, String type, User user) {
+		return switch (type) {
+			case "pick" -> stores.stream()
+				.filter(store -> store.getType() == StoreType.PICK)
+				.toList();
+			case "trend" -> stores.stream()
+				.filter(store -> store.getType() == StoreType.TREND)
+				.toList();
+			case "taste" -> stores.stream()
+				.filter(store -> store.getType() == StoreType.TASTE)
+				.toList();
+			case "wish" -> stores.stream()
+				.filter(store -> wishilistRepository.existsByUserAndStoreAndIsWishTrue(user, store))
+				.toList();
+			case "popular" -> storeRepository.findPopularStores();
+			case "star" -> storeRepository.findTopRatedStores();
+			case "near" -> stores;
+			default -> throw new StoreNotFoundException("존재하지 않는 타입입니다.");
+		};
+	}
+
+	private StoreDetail convertToStoreDetail(Store store, User user) {
+		Double averageStars = store.getReviews().stream()
+			.mapToDouble(Reviews::getStar)
+			.average()
+			.stream()
+			.map(avg -> Math.round(avg * 10) / 10.0)
+			.findFirst()
+			.orElse(0.0);
+
+		String topReview = store.getReviews().stream()
+			.map(Reviews::getComment)
+			.findFirst()
+			.orElse(null);
+
+		List<String> images = store.getStoreImages().stream()
+			.map(StoreImage::getUrl)
+			.toList();
+
+		boolean isWish = wishilistRepository.findByUserAndStore(user, store)
+			.map(Wishlist::isWish)
+			.orElse(false);
+
+		return StoreDetail.of(store, averageStars, isWish, topReview, images);
 	}
 }

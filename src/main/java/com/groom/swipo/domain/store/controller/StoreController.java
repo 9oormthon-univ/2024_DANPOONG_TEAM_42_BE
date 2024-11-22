@@ -14,6 +14,7 @@ import com.groom.swipo.domain.store.dto.request.ReviewsRegisterRequest;
 import com.groom.swipo.domain.store.dto.response.MapQueryResponse;
 import com.groom.swipo.domain.store.dto.response.MapStoreDetailResponse;
 import com.groom.swipo.domain.store.dto.response.MapTabViewResponse;
+import com.groom.swipo.domain.store.dto.response.StoreSearchResponse;
 import com.groom.swipo.domain.store.service.ReviewsService;
 import com.groom.swipo.domain.store.service.StoreService;
 import com.groom.swipo.domain.store.service.WishlistService;
@@ -124,5 +125,17 @@ public class StoreController {
 	public ResTemplate<MapTabViewResponse> getStoreTabs(Principal principal) {
 		MapTabViewResponse data = storeService.getStoreTabs(principal);
 		return new ResTemplate<>(HttpStatus.OK, "탭별 가게 조회 성공", data);
+	}
+
+	@GetMapping("/search")
+	public ResTemplate<StoreSearchResponse> searchStores(
+		@RequestParam(name = "keyword") String keyword,
+		@RequestParam(name = "category", defaultValue = "all") String category,
+		@RequestParam(name = "type") String type,
+		@RequestParam(name = "page", defaultValue = "0") int page,
+		Principal principal
+	) {
+		StoreSearchResponse data = storeService.searchStores(keyword, category, type, page, principal);
+		return new ResTemplate<>(HttpStatus.OK, "가게 검색 성공", data);
 	}
 }

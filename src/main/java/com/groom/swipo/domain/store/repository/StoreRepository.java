@@ -28,4 +28,20 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 		@Param("longitude") double longitude,
 		@Param("radius") double radius
 	);
+
+	@Query("""
+		    SELECT s FROM Store s
+		    LEFT JOIN s.wishlists w ON w.isWish = true
+		    GROUP BY s
+		    ORDER BY COUNT(w) DESC
+		""")
+	List<Store> findPopularStores();
+
+	@Query("""
+		    SELECT s FROM Store s
+		    LEFT JOIN s.reviews r
+		    GROUP BY s
+		    ORDER BY COALESCE(AVG(r.star), 0) DESC
+		""")
+	List<Store> findTopRatedStores();
 }

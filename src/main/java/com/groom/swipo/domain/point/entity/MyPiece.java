@@ -48,4 +48,8 @@ public class MyPiece extends BaseEntity {
 	private MyPiece(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
+
+	public void setIsDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
 }

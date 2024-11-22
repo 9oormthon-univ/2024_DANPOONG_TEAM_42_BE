@@ -6,6 +6,7 @@ import java.util.List;
 import com.groom.swipo.domain.payment.entity.Paylist;
 import com.groom.swipo.domain.point.entity.Cardlist;
 import com.groom.swipo.domain.point.entity.MyPiece;
+import com.groom.swipo.domain.store.entity.enums.StoreCategory;
 import com.groom.swipo.domain.store.entity.enums.StoreType;
 import com.groom.swipo.global.common.enums.Area;
 import com.groom.swipo.global.entity.BaseEntity;
@@ -38,8 +39,12 @@ public class Store extends BaseEntity {
 	private String name;
 
 	@Enumerated(EnumType.STRING)
-	@Column(nullable = false, length = 20)
+	@Column(nullable = false)
 	private StoreType type;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private StoreCategory category;
 
 	private String address;
 
@@ -83,9 +88,11 @@ public class Store extends BaseEntity {
 
 	// 기타
 	@Builder
-	private Store(String name, StoreType type, String address, Double latitude, Double longitude, Integer percent) {
+	private Store(String name, StoreType type, StoreCategory category, String address, Double latitude,
+		Double longitude, Integer percent) {
 		this.name = name;
 		this.type = type;
+		this.category = category;
 		this.address = address;
 		this.latitude = latitude;
 		this.longitude = longitude;

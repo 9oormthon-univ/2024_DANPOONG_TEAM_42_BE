@@ -33,14 +33,15 @@ public class PointService {
 		Long userId = Long.parseLong(principal.getName());
 		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
-		List<MyPiece> myPieces = myPieceRepository.findAllByUser(user);
+		// isDeleted가 false인 조각들만 조회
+		List<MyPiece> myPieces = myPieceRepository.findAllByUserAndIsDeletedFalse(user);
 
 		if (myPieces.isEmpty()) {
 			throw new PiecesNotFoundException();
 		}
 
 		List<PieceInfo> pieces = myPieces.stream()
-			.map(myPiece -> PieceInfo.from(myPiece ,myPiece.getPiece()))
+			.map(myPiece -> PieceInfo.from(myPiece, myPiece.getPiece()))
 			.toList();
 
 		Integer piecesNum = pieces.size();

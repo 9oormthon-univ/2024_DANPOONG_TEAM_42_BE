@@ -1,13 +1,10 @@
 package com.groom.swipo.domain.payment.entity;
 
 import com.groom.swipo.domain.store.entity.Store;
-import com.groom.swipo.global.common.enums.Area;
 import com.groom.swipo.global.entity.BaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -42,7 +39,9 @@ public class Paylist extends BaseEntity {
 	private Store store;
 
 	@Builder
-	private Paylist(long value) {
+	private Paylist(long value, Pay pay, Store store) {
 		this.value = value;
+		this.pay = pay;
+		this.store = store;
 	}
 }

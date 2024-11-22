@@ -29,6 +29,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 		@Param("radius") double radius
 	);
 
+	// 관심 등록 수가 많은 순으로 가게 조회
 	@Query("""
 		    SELECT s FROM Store s
 		    LEFT JOIN s.wishlists w ON w.isWish = true
@@ -37,6 +38,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 		""")
 	List<Store> findPopularStores();
 
+	// 별점 평균이 높은 순으로 가게 조회
 	@Query("""
 		    SELECT s FROM Store s
 		    LEFT JOIN s.reviews r

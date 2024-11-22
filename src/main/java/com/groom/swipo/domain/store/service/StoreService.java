@@ -155,16 +155,20 @@ public class StoreService {
 		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
 		List<Store> stores = storeRepository.findAll();
+
+		// 필터링: 키워드, 카테고리, 타입
 		stores = filterByKeyword(stores, keyword);
 		stores = filterByCategory(stores, category);
 		stores = filterByType(stores, type, user);
 
+		// 페이지 정보 생성
 		PageInfo pageInfo = PageInfo.builder()
 			.currentPage(page)
 			.totalPages((int)Math.ceil((double)stores.size() / PAGE_SIZE))
 			.totalItems(stores.size())
 			.build();
 
+		// 현재 페이지에 해당하는 데이터로 변환
 		List<StoreDetail> storeDetails = stores.stream()
 			.skip((long)page * PAGE_SIZE)
 			.limit(PAGE_SIZE)
@@ -174,6 +178,7 @@ public class StoreService {
 		return StoreSearchResponse.of(pageInfo, storeDetails);
 	}
 
+	// 키워드 필터링: 가게명이나 주소에 키워드 포함 여부
 	private List<Store> filterByKeyword(List<Store> stores, String keyword) {
 		if (keyword == null || keyword.isBlank()) {
 			return stores;
@@ -184,6 +189,7 @@ public class StoreService {
 			.toList();
 	}
 
+	// 카테고리 필터링: 카테고리가 존재하지 않으면 예외 발생
 	private List<Store> filterByCategory(List<Store> stores, String category) {
 		if (category.equals("all")) {
 			return stores;
@@ -198,6 +204,7 @@ public class StoreService {
 		}
 	}
 
+	// 타입 필터링: 거리순 로직 개발 필요
 	private List<Store> filterByType(List<Store> stores, String type, User user) {
 		return switch (type) {
 			case "pick" -> stores.stream()
@@ -219,6 +226,7 @@ public class StoreService {
 		};
 	}
 
+	// Store 데이터를 StoreDetail로 변환
 	private StoreDetail convertToStoreDetail(Store store, User user) {
 		Double averageStars = store.getReviews().stream()
 			.mapToDouble(Reviews::getStar)

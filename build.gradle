@@ -51,6 +51,9 @@ dependencies {
 
 	// 휴대폰 인증 API (nurigo)
 	implementation 'net.nurigo:sdk:4.3.0'
+
+	// S3
+	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
 }
 
 // iamport

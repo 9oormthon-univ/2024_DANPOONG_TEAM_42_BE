@@ -2,13 +2,11 @@ package com.groom.swipo.domain.auth.service;
 
 import java.net.URI;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -27,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class KakaoLoginService {
 
-	private static final String TOKEN_URL = "https://kauth.kakao.com/oauth/token";
 	private static final String USER_INFO_URL = "https://kapi.kakao.com/v2/user/me";
 
 	private final UserRepository userRepository;
@@ -36,19 +33,9 @@ public class KakaoLoginService {
 	private final RestClient restClient;
 	private final ObjectMapper objectMapper;
 
-	@Value("${oauth.kakao.client-id}")
-	private String clientId;
-
-	@Value("${oauth.kakao.client-secret}")
-	private String clientSecret;
-
-	@Value("${oauth.kakao.redirect-uri}")
-	private String redirectUri;
-
 	@Transactional
-	public SocialLoginResponse kakaoLogin(String code) {
+	public SocialLoginResponse kakaoLogin(String kakaoAccessToken) {
 		try {
-			String kakaoAccessToken = getKakaoAccessToken(code);
 			String[] userInfo = getKakaoUserInfo(kakaoAccessToken);
 
 			return userRepository.findByProviderAndProviderId(Provider.KAKAO, userInfo[0])
@@ -64,25 +51,6 @@ public class KakaoLoginService {
 		String refreshToken = tokenProvider.createRefreshToken(user);
 		tokenRenewService.saveRefreshToken(refreshToken, user.getId());
 		return SocialLoginResponse.of(user.getId(), accessToken, refreshToken);
-	}
-
-	private String getKakaoAccessToken(String code) throws JsonProcessingException {
-		String url = UriComponentsBuilder.fromHttpUrl(TOKEN_URL)
-			.queryParam("grant_type", "authorization_code")
-			.queryParam("client_id", clientId)
-			.queryParam("redirect_uri", redirectUri)
-			.queryParam("code", code)
-			.queryParam("client_secret", clientSecret)
-			.toUriString();
-
-		String response = restClient.post()
-			.uri(url)
-			.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-			.retrieve()
-			.body(String.class);
-
-		JsonNode jsonNode = objectMapper.readTree(response);
-		return jsonNode.get("access_token").asText();
 	}
 
 	private String[] getKakaoUserInfo(String kakaoAccessToken) throws JsonProcessingException {
@@ -101,18 +69,5 @@ public class KakaoLoginService {
 		String profileImageUrl = jsonNode.path("kakao_account").path("profile").path("profile_image_url").asText();
 
 		return new String[] {providerId, profileImageUrl};
-	}
-
-	@Transactional
-	public SocialLoginResponse kakaoLoginWithAccessToken(String kakaoAccessToken) {
-		try {
-			String[] userInfo = getKakaoUserInfo(kakaoAccessToken);
-
-			return userRepository.findByProviderAndProviderId(Provider.KAKAO, userInfo[0])
-				.map(this::handleExistingUserLogin)
-				.orElseGet(() -> SocialLoginResponse.of(userInfo[0], userInfo[1]));
-		} catch (JsonProcessingException e) {
-			throw new KakaoAuthException();
-		}
 	}
 }

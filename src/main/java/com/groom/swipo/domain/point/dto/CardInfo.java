@@ -16,7 +16,7 @@ public record CardInfo(
 			.cardId(String.valueOf(card.getId()))
 			.region(card.getArea().getRegionName())
 			.point(card.getTotalPoint())
-			.customImage(card.getCustomeImage())
+			.customImage(card.getCustomImage())
 			.build();
 	}
 }

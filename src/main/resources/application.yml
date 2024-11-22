@@ -47,3 +47,15 @@ sms:
 app:
   local-url: ${app.local-url}
   prod-url: ${app.prod-url}
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${cloud.aws.credentials.accessKey}
+      secretKey: ${cloud.aws.credentials.secretKey}
+    region:
+      static: ${cloud.aws.region.static}
+    stack:
+      auto: false
+  s3:
+    bucket: ${cloud.s3.bucket}

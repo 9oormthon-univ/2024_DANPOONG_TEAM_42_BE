@@ -7,9 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.groom.swipo.domain.point.dto.Request.SwipstoneSwapRequest;
+import com.groom.swipo.domain.point.dto.Response.PointHomeResponse;
 import com.groom.swipo.domain.point.dto.Response.SwipstoneResponse;
 import com.groom.swipo.domain.point.dto.Response.SwipstoneSwapResponse;
 import com.groom.swipo.domain.point.service.PointService;
@@ -26,6 +29,46 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "포인트", description = "포인트 관련 API 그룹")
 public class PointController {
 	private final PointService pointService;
+
+	@GetMapping("/home")
+	@Operation(
+		summary = "스윕페이/포인트 홈 조회",
+		description = "상단 스웹페이 탭 클릭시 조회되는 정보 제공",
+		security = {},
+		responses = {
+			@ApiResponse(responseCode = "200", description = "조회 성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "401", description = "인증되지 않은 요청"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
+		}
+	)
+	public ResTemplate<PointHomeResponse> getHome(Principal principal) {
+		PointHomeResponse data = pointService.getHome(principal);
+		return new ResTemplate<>(HttpStatus.OK, "조회 성공", data);
+	}
+
+	@PostMapping("/card-register")
+	@Operation(
+		summary = "포인트 카드 등록",
+		description = "지역 정보와 이미지 파일을 사용하여 포인트 카드를 등록합니다.",
+		security = {},
+		responses = {
+			@ApiResponse(responseCode = "201", description = "카드 등록 성공"),
+			@ApiResponse(responseCode = "400", description = "유효하지 않은 동네"),
+			@ApiResponse(responseCode = "401", description = "유효하지 않은 인증 토큰"),
+			@ApiResponse(responseCode = "409", description = "중복 카드 등록"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
+		}
+	)
+	public ResTemplate<Void> registerCard(
+		@RequestPart("region") String region,
+		@RequestPart(value = "custom_image", required = false) MultipartFile customImage,
+		Principal principal) {
+
+		pointService.registerCard(region, customImage, principal);
+		return new ResTemplate<>(HttpStatus.CREATED, "카드 등록 성공");
+	}
+
 
 	@GetMapping("/swipstone")
 	@Operation(

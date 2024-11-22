@@ -35,17 +35,14 @@ public class Card extends BaseEntity {
 	@Column(name = "card_id")
 	private Long id;
 
-	@Column(nullable = false)
-	private String number;
-
 	private String contents;
 
 	@Column(nullable = false)
 	@ColumnDefault("0")
-	private Integer totalPoint;
+	private Integer totalPoint = 0;
 
 	@Column(nullable = false)
-	private String customeImage;
+	private String customImage;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -61,11 +58,11 @@ public class Card extends BaseEntity {
 	private List<Cardlist> cardlists = new ArrayList<>();
 
 	@Builder
-	private Card(String number, String contents, Integer totalPoint, String customeImage, Area area) {
-		this.number = number;
-		this.contents = contents;
-		this.totalPoint = totalPoint;
-		this.customeImage = customeImage;
+	private Card(User user, String customImage, Area area) {
+		this.user = user;
+		this.contents = "";
+		this.totalPoint = 0; // 생성자에서 명시적으로 기본값 설정
+		this.customImage = customImage;
 		this.area = area;
 	}
 

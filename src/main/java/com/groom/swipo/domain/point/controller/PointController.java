@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.groom.swipo.domain.point.dto.Request.SwipstoneSwapRequest;
 import com.groom.swipo.domain.point.dto.Response.PointHomeResponse;
@@ -43,6 +45,29 @@ public class PointController {
 	public ResTemplate<PointHomeResponse> getHome(Principal principal) {
 		PointHomeResponse data = pointService.getHome(principal);
 		return new ResTemplate<>(HttpStatus.OK, "조회 성공", data);
+	}
+
+	@PostMapping("/card-register")
+	@Operation(
+		summary = "포인트 카드 등록",
+		description = "지역 정보와 이미지 파일을 사용하여 포인트 카드를 등록합니다.",
+		security = {},
+		responses = {
+			@ApiResponse(responseCode = "201", description = "카드 등록 성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "401", description = "유효하지 않은 인증 토큰"),
+			@ApiResponse(responseCode = "403", description = "동네 인증이 안된 경우"),
+			@ApiResponse(responseCode = "409", description = "중복 카드 등록"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
+		}
+	)
+	public ResTemplate<Void> registerCard(
+		@RequestPart("region") String region,
+		@RequestPart(value = "custom_image", required = false) MultipartFile customImage,
+		Principal principal) {
+
+		pointService.registerCard(region, customImage, principal);
+		return new ResTemplate<>(HttpStatus.CREATED, "카드 등록 성공");
 	}
 
 

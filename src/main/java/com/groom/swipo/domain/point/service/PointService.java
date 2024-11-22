@@ -5,7 +5,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.groom.swipo.domain.auth.service.S3Service;
 import com.groom.swipo.domain.payment.dto.PaylistInfo;
 import com.groom.swipo.domain.payment.entity.Pay;
 import com.groom.swipo.domain.payment.entity.Paylist;
@@ -18,6 +20,7 @@ import com.groom.swipo.domain.point.dto.Response.SwipstoneResponse;
 import com.groom.swipo.domain.point.dto.Response.SwipstoneSwapResponse;
 import com.groom.swipo.domain.point.entity.Card;
 import com.groom.swipo.domain.point.entity.MyPiece;
+import com.groom.swipo.domain.point.exception.DuplicateCardException;
 import com.groom.swipo.domain.point.exception.PiecesNotFoundException;
 import com.groom.swipo.domain.point.repository.CardRepository;
 import com.groom.swipo.domain.point.repository.MyPieceRepository;
@@ -26,6 +29,7 @@ import com.groom.swipo.domain.user.entity.User;
 import com.groom.swipo.domain.user.exception.UserNotFoundException;
 import com.groom.swipo.domain.payment.exception.PayNotFoundException;
 import com.groom.swipo.domain.user.repository.UserRepository;
+import com.groom.swipo.global.common.enums.Area;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,6 +42,7 @@ public class PointService {
 	private final PayRepository payRepository;
 	private final CardRepository cardRepository;
 	private final PaylistRepository paylistRepository;
+	private final S3Service s3Service;
 
 	public PointHomeResponse getHome(Principal principal) {
 		Long userId = Long.parseLong(principal.getName());
@@ -59,6 +64,34 @@ public class PointService {
 			.toList();
 
 		return PointHomeResponse.of(pay, cardInfos.size(), cardInfos, paylistInfos);
+	}
+
+	@Transactional
+	public void registerCard(String region, MultipartFile customImage, Principal principal) {
+		Long userId = Long.parseLong(principal.getName());
+		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+
+		// 지역 확인
+		Area area = Area.fromRegionName(region);
+
+		// 중복 카드 확인
+		if (cardRepository.existsByUserAndArea(user, area)) {
+			throw new DuplicateCardException();
+		}
+
+		// 이미지 저장 로직
+		String imageUrl = null;
+		if (customImage != null && !customImage.isEmpty()) {
+			imageUrl = s3Service.uploadImage(customImage);
+		}
+
+		// 카드 등록
+		Card card = Card.builder()
+			.user(user)
+			.area(area)
+			.customImage(imageUrl != null ? imageUrl : "default") // 없으면 default
+			.build();
+		cardRepository.save(card);
 	}
 
 	public SwipstoneResponse getSwipstone(Principal principal) {

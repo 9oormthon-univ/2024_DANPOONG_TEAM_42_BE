@@ -11,7 +11,7 @@ public record CardInfo(
 	Integer point,
 	String customImage
 ) {
-	public static CardInfo of(Card card) {
+	public static CardInfo from(Card card) {
 		return CardInfo.builder()
 			.cardId(String.valueOf(card.getId()))
 			.region(card.getArea().getRegionName())

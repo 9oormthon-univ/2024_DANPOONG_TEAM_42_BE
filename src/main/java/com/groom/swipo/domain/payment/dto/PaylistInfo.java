@@ -18,7 +18,7 @@ public record PaylistInfo(
 		return PaylistInfo.builder()
 			.paylistId(String.valueOf(paylist.getId()))
 			.amount((int)paylist.getValue())
-			.amount(Integer.valueOf(store.getName()))
+			.storeName(store.getName())
 			.createAt(paylist.getCreatedAt())
 			.build();
 	}

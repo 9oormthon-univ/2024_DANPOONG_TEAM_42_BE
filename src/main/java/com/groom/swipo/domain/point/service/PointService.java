@@ -54,7 +54,7 @@ public class PointService {
 		// 사용자 카드 정보 조회
 		List<Card> cards = cardRepository.findAllByUser(user);
 		List<CardInfo> cardInfos = cards.stream()
-			.map(CardInfo::of)
+			.map(CardInfo::from)
 			.toList();
 
 		// 최근 페이 거래 내역 조회 (최대 5개)

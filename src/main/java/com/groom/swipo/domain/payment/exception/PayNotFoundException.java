@@ -8,6 +8,6 @@ public class PayNotFoundException extends NotFoundGroupException {
 	}
 
 	public PayNotFoundException() {
-		super("Pay not found for user.");
+		super("해당 페이를 찾지 못했습니다.");
 	}
 }

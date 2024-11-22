@@ -39,7 +39,7 @@ public class Card extends BaseEntity {
 
 	@Column(nullable = false)
 	@ColumnDefault("0")
-	private Integer totalPoint = 0;
+	private Integer totalPoint;
 
 	@Column(nullable = false)
 	private String customImage;
@@ -61,7 +61,7 @@ public class Card extends BaseEntity {
 	private Card(User user, String customImage, Area area) {
 		this.user = user;
 		this.contents = "";
-		this.totalPoint = 0; // 생성자에서 명시적으로 기본값 설정
+		this.totalPoint = 0; //default 0
 		this.customImage = customImage;
 		this.area = area;
 	}

@@ -69,7 +69,7 @@ public class PointService {
 			.map(paylist -> PaylistInfo.of(paylist, paylist.getStore()))
 			.toList();
 
-		return PointHomeResponse.of(pay, cardInfos.size(), cardInfos, paylistInfos);
+		return PointHomeResponse.of(user.getName(), pay, cardInfos.size(), cardInfos, paylistInfos);
 	}
 
 	@Transactional
@@ -154,7 +154,7 @@ public class PointService {
 			.map(CardInfo::from)
 			.toList();
 
-		return PointTransferInfoResponse.of(cards.size(),cardInfos);
+		return PointTransferInfoResponse.of(cards.size(), cardInfos);
 	}
 
 	// 포인트 이전
@@ -170,7 +170,7 @@ public class PointService {
 
 		//해당 유저가 가진 카드가 맞는지 검증
 		if (!Objects.equals(user.getId(), toCard.getUser().getId()) & !Objects.equals(user.getId(),
-			toCard.getUser().getId())){
+			toCard.getUser().getId())) {
 			throw new CardNotFoundException("해당 유저가 보유한 카드가 아닙니다");
 		}
 

@@ -10,13 +10,16 @@ import lombok.Builder;
 
 @Builder
 public record PointHomeResponse(
+	String userName,
 	Integer balance, // 페이잔액
 	Integer totalCards, //사용자가 보유한 모든 지역 카드 수
 	List<CardInfo> cards,
 	List<PaylistInfo> paylistInfos
 ) {
-	public static PointHomeResponse of(Pay pay, Integer totalCards, List<CardInfo> cards, List<PaylistInfo> paylistInfos){
+	public static PointHomeResponse of(String userName, Pay pay, Integer totalCards, List<CardInfo> cards,
+		List<PaylistInfo> paylistInfos) {
 		return PointHomeResponse.builder()
+			.userName(userName)
 			.balance(pay.getTotalPay())
 			.totalCards(totalCards)
 			.cards(cards)

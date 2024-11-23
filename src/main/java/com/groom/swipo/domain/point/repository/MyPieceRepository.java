@@ -11,5 +11,5 @@ import com.groom.swipo.domain.user.entity.User;
 @Repository
 public interface MyPieceRepository extends JpaRepository<MyPiece, Long> {
 	List<MyPiece> findAllByUserAndIsDeletedFalse(User user);
-	List<MyPiece> findAllByIdInAndUserId(List<Long> ids, Long userId);
+	List<MyPiece> findAllByIdInAndUserId(List<String> ids, Long userId);
 }

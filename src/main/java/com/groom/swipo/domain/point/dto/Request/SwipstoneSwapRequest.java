@@ -5,6 +5,6 @@ import java.util.List;
 public record SwipstoneSwapRequest(
 	Integer point,
 	Integer usePieceNum,
-	List<Long> myPieceIds
+	List<String> myPieceIds
 ) {}
 

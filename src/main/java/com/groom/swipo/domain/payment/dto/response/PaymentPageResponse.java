@@ -10,13 +10,15 @@ import lombok.Builder;
 public record PaymentPageResponse(
 	Integer totalPoint,
 	Integer totalPay,
-	Integer percent
+	Integer percent,
+	String customImage
 ) {
 	public static PaymentPageResponse of(Card card, User user, Store store) {
 		return PaymentPageResponse.builder()
 			.totalPoint(card.getTotalPoint())
 			.totalPay(user.getPay().getTotalPay())
 			.percent(store.getPercent())
+			.customImage(card.getCustomImage())
 			.build();
 	}
 }

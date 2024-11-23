@@ -2,6 +2,7 @@ package com.groom.swipo.domain.point.service;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,13 +15,18 @@ import com.groom.swipo.domain.payment.entity.Paylist;
 import com.groom.swipo.domain.payment.repository.PayRepository;
 import com.groom.swipo.domain.payment.repository.PaylistRepository;
 import com.groom.swipo.domain.point.dto.PieceInfo;
+import com.groom.swipo.domain.point.dto.Request.PointTransferRequest;
 import com.groom.swipo.domain.point.dto.Request.SwipstoneSwapRequest;
 import com.groom.swipo.domain.point.dto.Response.PointHomeResponse;
+import com.groom.swipo.domain.point.dto.Response.PointTransferResponse;
+import com.groom.swipo.domain.point.dto.Response.PointTransferInfoResponse;
 import com.groom.swipo.domain.point.dto.Response.SwipstoneResponse;
 import com.groom.swipo.domain.point.dto.Response.SwipstoneSwapResponse;
 import com.groom.swipo.domain.point.entity.Card;
 import com.groom.swipo.domain.point.entity.MyPiece;
+import com.groom.swipo.domain.point.exception.CardNotFoundException;
 import com.groom.swipo.domain.point.exception.DuplicateCardException;
+import com.groom.swipo.domain.point.exception.InsufficientPointsException;
 import com.groom.swipo.domain.point.exception.PiecesNotFoundException;
 import com.groom.swipo.domain.point.repository.CardRepository;
 import com.groom.swipo.domain.point.repository.MyPieceRepository;
@@ -135,5 +141,47 @@ public class PointService {
 		});
 
 		return new SwipstoneSwapResponse(pay.getTotalPay());
+	}
+
+	// 포인트 카드 조회
+	public PointTransferInfoResponse getPointTransferInfo(Principal principal) {
+		Long userId = Long.parseLong(principal.getName());
+		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+
+		// 사용자 카드 정보 조회
+		List<Card> cards = cardRepository.findAllByUser(user);
+		List<CardInfo> cardInfos = cards.stream()
+			.map(CardInfo::from)
+			.toList();
+
+		return PointTransferInfoResponse.of(cards.size(),cardInfos);
+	}
+
+	// 포인트 이전
+	@Transactional
+	public PointTransferResponse pointTransfer(PointTransferRequest request, Principal principal) {
+		Long userId = Long.parseLong(principal.getName());
+		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+
+		Card fromCard = cardRepository.findById(Long.valueOf(request.fromCardId()))
+			.orElseThrow(CardNotFoundException::new);
+		Card toCard = cardRepository.findById(Long.valueOf(request.toCardId()))
+			.orElseThrow(CardNotFoundException::new);
+
+		//해당 유저가 가진 카드가 맞는지 검증
+		if (!Objects.equals(user.getId(), toCard.getUser().getId()) & !Objects.equals(user.getId(),
+			toCard.getUser().getId())){
+			throw new CardNotFoundException("해당 유저가 보유한 카드가 아닙니다");
+		}
+
+		// 포인트 업데이트(이전)
+		if ((fromCard.getTotalPoint() - request.point()) < 0) {
+			throw new InsufficientPointsException("이전할 포인트가 부족합니다.");
+		}
+
+		fromCard.updatePoint(-request.point());
+		toCard.updatePoint(request.point());
+
+		return PointTransferResponse.of(fromCard, toCard);
 	}
 }

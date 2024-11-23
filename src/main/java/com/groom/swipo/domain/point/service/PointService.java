@@ -180,7 +180,7 @@ public class PointService {
 		}
 
 		fromCard.updatePoint(-request.point());
-		toCard.updatePoint(request.point());
+		toCard.updatePoint((int)(request.point() * 0.99));
 
 		return PointTransferResponse.of(fromCard, toCard);
 	}

@@ -36,11 +36,6 @@ public class JwtFilter extends GenericFilterBean {
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
 		String token = tokenProvider.resolveToken(httpRequest);
 
-		if(token == null){
-			errorDetection(httpResponse, "토큰이 비어있습니다.");
-			return;
-		}
-
 		try {
 			if (StringUtils.hasText(token)) {
 				tokenProvider.validateToken(token);
@@ -49,18 +44,12 @@ public class JwtFilter extends GenericFilterBean {
 			}
 			filterChain.doFilter(request, response);
 		} catch (InvalidTokenException e) {
-			errorDetection(httpResponse, "토큰이 만료되었습니다.");
+			httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			httpResponse.setContentType("application/json");
+			httpResponse.setCharacterEncoding("UTF-8");
+			ResTemplate<Void> errorResponse = new ResTemplate<>(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다.");
+			httpResponse.getWriter().write(objectMapper.writeValueAsString(errorResponse));
+			httpResponse.getWriter().flush();
 		}
-	}
-
-	private void errorDetection(HttpServletResponse httpResponse,String message) throws IOException {
-		httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		httpResponse.setContentType("application/json");
-		httpResponse.setCharacterEncoding("UTF-8");
-
-		ResTemplate<Void> errorResponse = new ResTemplate<>(HttpStatus.UNAUTHORIZED, message);
-		httpResponse.getWriter().write(objectMapper.writeValueAsString(errorResponse));
-
-		httpResponse.getWriter().flush();
 	}
 }

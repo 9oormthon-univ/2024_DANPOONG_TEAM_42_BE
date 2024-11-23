@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.groom.swipo.domain.point.dto.Request.PointTransferRequest;
 import com.groom.swipo.domain.point.dto.Request.SwipstoneSwapRequest;
 import com.groom.swipo.domain.point.dto.Response.PointHomeResponse;
+import com.groom.swipo.domain.point.dto.Response.PointTransferResponse;
+import com.groom.swipo.domain.point.dto.Response.PointTransferInfoResponse;
 import com.groom.swipo.domain.point.dto.Response.SwipstoneResponse;
 import com.groom.swipo.domain.point.dto.Response.SwipstoneSwapResponse;
 import com.groom.swipo.domain.point.service.PointService;
@@ -69,7 +72,6 @@ public class PointController {
 		return new ResTemplate<>(HttpStatus.CREATED, "카드 등록 성공");
 	}
 
-
 	@GetMapping("/swipstone")
 	@Operation(
 		summary = "스윕스톤 조회",
@@ -101,8 +103,43 @@ public class PointController {
 			@ApiResponse(responseCode = "500", description = "서버 오류")
 		}
 	)
-	public ResTemplate<SwipstoneSwapResponse> swapSwipstone(@RequestBody SwipstoneSwapRequest resquest, Principal principal) {
+	public ResTemplate<SwipstoneSwapResponse> swapSwipstone(@RequestBody SwipstoneSwapRequest resquest,
+		Principal principal) {
 		SwipstoneSwapResponse data = pointService.swapSwipstone(resquest, principal);
 		return new ResTemplate<>(HttpStatus.OK, "교환 성공", data);
+	}
+
+	@GetMapping("/transfer-info")
+	@Operation(
+		summary = "포인트 이전 조희",
+		description = "포인트 이전 페이지에 들어왔을떄 자신이 보유한 포인트 카드들 조회 가능",
+		security = {},
+		responses = {
+			@ApiResponse(responseCode = "200", description = "교환 성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "401", description = "인증되지 않은 요청"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
+		}
+	)
+	public ResTemplate<PointTransferInfoResponse> getPointTransferInfo(Principal principal) {
+		PointTransferInfoResponse data= pointService.getPointTransferInfo(principal);
+		return new ResTemplate<>(HttpStatus.OK, "내 카드 조회 성공", data);
+	}
+
+	@PostMapping("/transefer")
+	@Operation(
+		summary = "포인트 이전",
+		description = "포인트 이전 페이지에서 포인트 이전을 클릭 시 ",
+		security = {},
+		responses = {
+			@ApiResponse(responseCode = "200", description = "이전 성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "401", description = "인증되지 않은 요청"),
+			@ApiResponse(responseCode = "500", description = "서버 오류")
+		}
+	)
+	public ResTemplate<PointTransferResponse> pointTransfer(@RequestBody PointTransferRequest request, Principal principal) {
+		PointTransferResponse data = pointService.pointTransfer(request, principal);
+		return new ResTemplate<>(HttpStatus.OK, "이전 성공", data);
 	}
 }

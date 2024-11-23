@@ -5,7 +5,7 @@ import com.groom.swipo.domain.point.exception.InvalidRegionException;
 
 public enum Area {
 	CODE_02("02", "서울"),
-	CODE_031("031", "경기도"),
+	CODE_031("031", "경기"),
 	CODE_032("032", "인천"),
 	CODE_033("033", "강원"),
 	CODE_041("041", "충남"),

@@ -78,27 +78,27 @@ public class User extends BaseEntity {
 
 	// 밑에 연관관계 적어두기
 	// 페이 충전내역
-	@OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<PayChargelist> payChargelists = new ArrayList<>();
 
 	// 보유조각
-	@OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<MyPiece> myPieces = new ArrayList<>();
 
 	// 리뷰
-	@OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Reviews> reviews = new ArrayList<>();
 
 	// 관심
-	@OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Wishlist> wishlists = new ArrayList<>();
 
 	// 카드
-	@OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Card> Cards = new ArrayList<>();
 
 	// 페이
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "pay_id")
 	private Pay pay;
 

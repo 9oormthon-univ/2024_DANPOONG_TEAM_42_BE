@@ -28,7 +28,7 @@ public class Piece {
 	private String name;
 
 	// 내 조각
-	@OneToMany(mappedBy = "piece", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "piece", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<MyPiece> myPieces = new ArrayList<>();
 
 	@Builder

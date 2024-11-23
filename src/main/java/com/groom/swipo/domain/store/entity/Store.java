@@ -63,38 +63,39 @@ public class Store extends BaseEntity {
 
 	// 연관관계
 	// 페이 이용내역
-	@OneToMany(mappedBy = "store", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Paylist> paylists = new ArrayList<>();
 
 	// 보유 조각
-	@OneToMany(mappedBy = "store", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<MyPiece> myPieces = new ArrayList<>();
 
 	// 리뷰
-	@OneToMany(mappedBy = "store", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Reviews> reviews = new ArrayList<>();
 
 	// 위시리스트
-	@OneToMany(mappedBy = "store", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Wishlist> wishlists = new ArrayList<>();
 
 	// 가게 이미지
-	@OneToMany(mappedBy = "store", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<StoreImage> storeImages = new ArrayList<>();
 
 	// 카드 이용내역
-	@OneToMany(mappedBy = "store", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Cardlist> cardlists = new ArrayList<>();
 
 	// 기타
 	@Builder
-	private Store(String name, StoreType type, StoreCategory category, String address, Double latitude,
+	private Store(String name, StoreType type, StoreCategory category, String address, Double latitude, Area area,
 		Double longitude, Integer percent) {
 		this.name = name;
 		this.type = type;
 		this.category = category;
 		this.address = address;
 		this.latitude = latitude;
+		this.area = area;
 		this.longitude = longitude;
 		this.percent = percent;
 	}

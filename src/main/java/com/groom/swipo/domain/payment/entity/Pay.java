@@ -37,12 +37,12 @@ public class Pay extends BaseEntity {
 	private Integer totalPay;
 
 	// 유저 id
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "user_id")
 	private User user;
 
 	// 페이 내역
-	@OneToMany(mappedBy = "pay", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "pay", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Paylist> paylists = new ArrayList<>();
 
 	@Builder

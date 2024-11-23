@@ -45,8 +45,11 @@ public class MyPiece extends BaseEntity {
 	private Store store;
 
 	@Builder
-	private MyPiece(Boolean isDeleted) {
+	private MyPiece(Boolean isDeleted, User user, Piece piece, Store store) {
 		this.isDeleted = isDeleted;
+		this.user = user;
+		this.piece = piece;
+		this.store = store;
 	}
 
 	public void setIsDeleted(boolean isDeleted) {

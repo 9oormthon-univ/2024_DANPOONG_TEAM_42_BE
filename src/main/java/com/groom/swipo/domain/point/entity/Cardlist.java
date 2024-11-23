@@ -39,7 +39,9 @@ public class Cardlist extends BaseEntity {
 	private Store store;
 
 	@Builder
-	private Cardlist(long value) {
+	private Cardlist(long value, Card card, Store store) {
 		this.value = value;
+		this.card = card;
+		this.store = store;
 	}
 }

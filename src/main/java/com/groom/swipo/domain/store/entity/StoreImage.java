@@ -33,7 +33,8 @@ public class StoreImage extends BaseEntity {
 	private Store store;
 
 	@Builder
-	private StoreImage(String url) {
+	private StoreImage(String url, Store store) {
 		this.url = url;
+		this.store = store;
 	}
 }

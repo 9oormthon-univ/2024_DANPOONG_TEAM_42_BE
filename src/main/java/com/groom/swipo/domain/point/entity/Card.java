@@ -54,7 +54,7 @@ public class Card extends BaseEntity {
 	private User user;
 
 	// 카드 이용내역
-	@OneToMany(mappedBy = "card", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Cardlist> cardlists = new ArrayList<>();
 
 	@Builder
